@@ -1,0 +1,35 @@
+.menunggu {
+  background-color: #c93f0f;
+  color: white;
+  padding: 0.3em 0.5em;
+  margin: 0.5em;
+  display: flex;
+  text-decoration: none;
+  border-radius: 2em;
+  font-weight: bolder;
+  justify-content: center;
+}
+
+.diterima {
+  background-color: #308003;
+  color: white;
+  padding: 0.3em 0.5em;
+  margin: 0.5em;
+  display: flex;
+  text-decoration: none;
+  border-radius: 2em;
+  font-weight: bolder;
+  justify-content: center;
+}
+
+.ditolak {
+  background-color: #d82411;
+  color: white;
+  padding: 0.3em 0.5em;
+  margin: 0.5em;
+  display: flex;
+  text-decoration: none;
+  border-radius: 2em;
+  font-weight: bolder;
+  justify-content: center;
+}
