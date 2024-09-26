@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Layout from "../components/layout/Layout";
 import {
   Box,
   Button,
   CircularProgress,
+  FormControl,
   Grid2,
   Input,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
@@ -15,6 +19,7 @@ import {
   Typography,
 } from "@mui/material";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
+import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 import { useSelector } from "react-redux";
 import {
   useMyPaymentQuery,
@@ -22,16 +27,21 @@ import {
 } from "../api/service/paymentApi";
 import { toast } from "react-toastify";
 import { useGetPostsQuery } from "../api/service/postApi";
+import { useGetFormQuery } from "../api/service/formApi";
+import ReactToPrint from "react-to-print";
+import { useGetAppQuery } from "../api/service/appApi";
 
 const createMarkup = (html) => {
   return { __html: html };
 };
 
 const Payment = () => {
-  const category = "pembayaran";
-
-  const { data: posts } = useGetPostsQuery(category);
+  const { data: app } = useGetAppQuery();
+  const { data: dPosts } = useGetPostsQuery();
   const { user } = useSelector((state) => state.user);
+  const { data: profile } = useGetFormQuery(user?.id, { skip: !user?.id });
+
+  const posts = dPosts?.filter((d) => d.kategori === "pembayaran");
 
   const [uploadPayment, { data, isSuccess, isLoading, error, reset }] =
     useUploadPaymentMutation();
@@ -44,7 +54,8 @@ const Payment = () => {
   });
 
   const [file, setFile] = useState(null);
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState("");
+  const [media, setMedia] = useState("Instagram");
 
   const formatCurrency = (value) => {
     const number = value.replace(/[^\d]/g, "");
@@ -68,6 +79,7 @@ const Payment = () => {
     const data = new FormData();
 
     data.append("name", user.name);
+    data.append("media", media);
     data.append("price", parseCurrency(price));
     data.append("file", file);
 
@@ -92,6 +104,8 @@ const Payment = () => {
     }
   }, [isSuccess, error, data]);
 
+  const boxRef = useRef();
+
   return (
     <Layout>
       <Grid2 container>
@@ -101,6 +115,97 @@ const Payment = () => {
           sx={{ p: 2, display: "flex", flexDirection: "column", gap: 2 }}
         >
           <Typography variant="h5">Pembayaran</Typography>
+
+          {payment?.status === "Terkonfirmasi" && (
+            <Paper sx={{ p: 1 }}>
+              <Box
+                ref={boxRef}
+                sx={{ display: "flex", flexDirection: "column", gap: 1, p: 1 }}
+              >
+                <img
+                  src={app?.kop_surat}
+                  style={{ height: 120, objectFit: "cover" }}
+                />
+                <table>
+                  <tbody>
+                    <tr>
+                      <td style={{ width: "200px" }}>Invoice</td>
+                      <td align="center" style={{ width: "15px" }}>
+                        :
+                      </td>
+                      <td>
+                        <p>{new Date(payment?.createdat).getTime()}</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Tanggal Pembayaran</td>
+                      <td align="center">:</td>
+                      <td>
+                        <p>
+                          {new Date(payment?.createdat).toLocaleDateString(
+                            "id-ID",
+                            { hour: "numeric", minute: "numeric" }
+                          )}
+                        </p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ width: "200px" }}>Atas Nama</td>
+                      <td align="center" style={{ width: "15px" }}>
+                        :
+                      </td>
+                      <td>{user?.name}</td>
+                    </tr>
+                    <tr>
+                      <td style={{ width: "200px" }}>Pembayaran</td>
+                      <td align="center" style={{ width: "15px" }}>
+                        :
+                      </td>
+                      <td>PPDB</td>
+                    </tr>
+                    <tr>
+                      <td style={{ width: "200px" }}>Nominal</td>
+                      <td align="center" style={{ width: "15px" }}>
+                        :
+                      </td>
+                      <td>{`Rp ${parseFloat(payment?.nominal).toLocaleString(
+                        "id-ID"
+                      )}`}</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <Box
+                  alignSelf="end"
+                  sx={{
+                    width: 200,
+                    height: 100,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <p>{`Bogor, ${new Date(payment?.createdat).toLocaleDateString(
+                    "id-ID"
+                  )}`}</p>
+
+                  <img
+                    src={app?.cap}
+                    alt="logo"
+                    style={{
+                      height: "50px",
+                      width: "50px",
+                      objectFit: "cover",
+                    }}
+                  />
+
+                  <p>Petugas PPDB</p>
+                </Box>
+              </Box>
+            </Paper>
+          )}
+
           <Paper sx={{ p: 1 }}>
             {posts?.map((post, index) => (
               <Typography
@@ -136,30 +241,73 @@ const Payment = () => {
                     </Button>
                   </TableCell>
                 </TableRow>
-                <TableRow>
-                  <TableCell>Berkas</TableCell>
-                  <TableCell align="center">:</TableCell>
-                  <TableCell>
-                    <Button
-                      variant="contained"
-                      color="info"
-                      sx={{ textTransform: "none" }}
-                      onClick={openLink}
-                    >
-                      Link
-                    </Button>
-                  </TableCell>
-                </TableRow>
+                {payment && (
+                  <TableRow>
+                    <TableCell>Berkas</TableCell>
+                    <TableCell align="center">:</TableCell>
+                    <TableCell>
+                      <Button
+                        variant="contained"
+                        color="info"
+                        sx={{ textTransform: "none" }}
+                        onClick={openLink}
+                      >
+                        Link
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                )}
+
+                {payment?.status === "Terkonfirmasi" && (
+                  <TableRow>
+                    <TableCell>Invoice</TableCell>
+                    <TableCell align="center">:</TableCell>
+                    <TableCell>
+                      <ReactToPrint
+                        trigger={() => (
+                          <Button
+                            variant="contained"
+                            color="success"
+                            startIcon={<LocalPrintshopIcon />}
+                          >
+                            Print
+                          </Button>
+                        )}
+                        content={() => boxRef.current}
+                      />
+                    </TableCell>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </Paper>
 
           {!payment && (
             <Paper
-              sx={{ p: 1, display: "flex", flexDirection: "column", gap: 1 }}
+              sx={{ p: 1, display: "flex", flexDirection: "column", gap: 2 }}
             >
+              <FormControl>
+                <InputLabel>Didapatkan dari mana informasi Nuraida?</InputLabel>
+                <Select
+                  label="Didapatkan dari mana informasi Nuraida?"
+                  value={media}
+                  onChange={(e) => setMedia(e.target.value)}
+                  required
+                >
+                  <MenuItem value="Instagram">Instagram</MenuItem>
+                  <MenuItem value="YouTube">YouTube</MenuItem>
+                  <MenuItem value="Brosur">Brosur</MenuItem>
+                  <MenuItem value="Pameran">Pameran</MenuItem>
+                  <MenuItem value="Website">Website</MenuItem>
+                  <MenuItem value="Kerabat">Kerabat</MenuItem>
+                </Select>
+              </FormControl>
               <TextField
-                variant="standard"
+                label="Nominal Pembayaran"
+                size="small"
+                placeholder="9000000"
+                required
+                slotProps={{ inputLabel: { shrink: true } }}
                 value={price}
                 onChange={priceHandler}
               />

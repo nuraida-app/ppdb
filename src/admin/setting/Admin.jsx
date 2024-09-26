@@ -70,7 +70,7 @@ const Admin = () => {
         />
 
         <TextField
-          label="Password Lama"
+          label="Password Baru"
           type="password"
           slotProps={{ inputLabel: { shrink: true } }}
           value={password || ""}

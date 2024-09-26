@@ -23,7 +23,12 @@ import DonutLargeOutlinedIcon from "@mui/icons-material/DonutLargeOutlined";
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import EventNoteOutlinedIcon from "@mui/icons-material/EventNoteOutlined";
 import ForumIcon from "@mui/icons-material/Forum";
+import EventNoteIcon from "@mui/icons-material/EventNote";
+import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
 import { Link } from "react-router-dom";
+import { useGetFormsQuery } from "../../../api/service/formApi";
+import { Badge } from "@mui/material";
+import { useGetPaymentsQuery } from "../../../api/service/paymentApi";
 
 const data1 = [
   {
@@ -42,24 +47,24 @@ const data1 = [
     icon: <SchoolOutlinedIcon color="primary" />,
   },
   {
-    label: "Persyaratan",
-    link: "/admin/persyaratan",
-    icon: <AttachFileOutlinedIcon color="primary" />,
-  },
-  {
-    label: "Biaya",
-    link: "/admin/biaya",
-    icon: <AttachMoneyOutlinedIcon color="primary" />,
-  },
-  {
-    label: "Pengumuman",
+    label: "Berita",
     link: "/admin/pengumuman",
     icon: <CampaignOutlinedIcon color="primary" />,
+  },
+  {
+    label: "Jadwal",
+    link: "/admin/jadwal",
+    icon: <EventNoteIcon color="primary" />,
   },
   {
     label: "Narahubung",
     link: "/admin/narahubung",
     icon: <WhatsAppIcon color="primary" />,
+  },
+  {
+    label: "Kuisioner",
+    link: "/admin/kuisioner",
+    icon: <ArticleOutlinedIcon color="primary" />,
   },
 ];
 
@@ -95,6 +100,14 @@ const data3 = [
 ];
 
 const ListMenu = () => {
+  const { data, refetch } = useGetFormsQuery();
+  const { data: payment, refetch: paymentRefetch } = useGetPaymentsQuery();
+
+  const count = data?.filter(
+    (d) => d.status_pendaftaran === "Diproses"
+  )?.length;
+  const newPayment = payment?.filter((p) => p.status === "Diproses")?.length;
+
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
   const [open3, setOpen3] = React.useState(false);
@@ -110,6 +123,15 @@ const ListMenu = () => {
   const handleClick3 = () => {
     setOpen3(!open3);
   };
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      refetch();
+      paymentRefetch();
+    }, 120000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <List
@@ -150,7 +172,9 @@ const ListMenu = () => {
 
       <ListItemButton onClick={handleClick2}>
         <ListItemIcon>
-          <FolderSharedOutlinedIcon color="primary" />
+          <Badge badgeContent={count} color="error">
+            <FolderSharedOutlinedIcon color="primary" />
+          </Badge>
         </ListItemIcon>
         <ListItemText primary="Pendaftar" />
         {open2 ? <ExpandLess /> : <ExpandMore />}
@@ -165,7 +189,14 @@ const ListMenu = () => {
               component={Link}
               to={item.link}
             >
-              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemIcon>
+                <Badge
+                  badgeContent={item.label === "Calon Pelajar" ? count : 0}
+                  color="error"
+                >
+                  {item.icon}
+                </Badge>
+              </ListItemIcon>
               <ListItemText primary={item.label} />
             </ListItemButton>
           ))}
@@ -174,7 +205,9 @@ const ListMenu = () => {
 
       <ListItemButton onClick={handleClick3}>
         <ListItemIcon>
-          <AssessmentIcon color="primary" />
+          <Badge badgeContent={newPayment} color="error">
+            <AssessmentIcon color="primary" />
+          </Badge>
         </ListItemIcon>
         <ListItemText primary="Laporan" />
         {open3 ? <ExpandLess /> : <ExpandMore />}
@@ -189,7 +222,14 @@ const ListMenu = () => {
               component={Link}
               to={item.link}
             >
-              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemIcon>
+                <Badge
+                  badgeContent={item.label === "Pembayaran" ? newPayment : 0}
+                  color="error"
+                >
+                  {item.icon}
+                </Badge>
+              </ListItemIcon>
               <ListItemText primary={item.label} />
             </ListItemButton>
           ))}

@@ -15,6 +15,13 @@ import { useDispatch } from "react-redux";
 import { setLogin } from "../api/features/authSlice";
 import "./styles.css";
 
+const convertPhoneNumber = (phone) => {
+  if (phone?.startsWith("0")) {
+    return `62${phone.slice(1)}`;
+  }
+  return phone;
+};
+
 const Signup = ({ open, close }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -24,30 +31,22 @@ const Signup = ({ open, close }) => {
   const [load] = useLoadMutation();
 
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
 
   const closeHandler = () => {
     setName("");
+    setPhone("");
     setEmail("");
     setPassword("");
-    setConfirmPassword("");
     close();
   };
 
   const signUpHandler = (e) => {
     e.preventDefault();
 
-    if (password !== confirmPassword) {
-      toast.error("Password tidak sama");
-    }
-
-    const data = {
-      name,
-      email,
-      password,
-    };
+    const data = { name, phone, email, password };
 
     register(data);
   };
@@ -88,38 +87,46 @@ const Signup = ({ open, close }) => {
           <form className="form" onSubmit={signUpHandler}>
             <TextField
               label="Nama"
+              placeholder="Nama"
               value={name}
               onChange={(e) => setName(e.target.value)}
               type="text"
               fullWidth
               required
+              slotProps={{ inputLabel: { shrink: true } }}
+            />
+
+            <TextField
+              label="Whatsapp"
+              placeholder="No Whatsapp"
+              value={phone}
+              onChange={(e) => setPhone(convertPhoneNumber(e.target.value))}
+              type="text"
+              fullWidth
+              required
+              slotProps={{ inputLabel: { shrink: true } }}
             />
 
             <TextField
               label="Email"
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               type="email"
               fullWidth
               required
+              slotProps={{ inputLabel: { shrink: true } }}
             />
 
             <TextField
               label="Password"
+              placeholder="Password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               fullWidth
               required
-            />
-
-            <TextField
-              label="Konfirmasi Password"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              fullWidth
-              required
+              slotProps={{ inputLabel: { shrink: true } }}
             />
 
             <Box sx={{ display: "flex", gap: 1, justifyContent: "end" }}>
@@ -138,15 +145,6 @@ const Signup = ({ open, close }) => {
                 sx={{ textTransform: "none" }}
               >
                 {isLoading ? <CircularProgress size={24} /> : "Daftar"}
-              </Button>
-
-              <Button
-                variant="contained"
-                color="error"
-                startIcon={<GoogleIcon />}
-                sx={{ textTransform: "none" }}
-              >
-                Google
               </Button>
             </Box>
           </form>

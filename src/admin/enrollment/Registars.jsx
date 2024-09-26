@@ -23,6 +23,7 @@ import {
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import "./styles.css";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const colums = [
   { label: "No", width: 40 },
@@ -34,16 +35,20 @@ const colums = [
 ];
 
 const Registars = () => {
+  const navigate = useNavigate();
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [userId, setUserId] = useState("");
+  const [name, setName] = useState("");
   const [searchTerm, setSearchTerm] = useState(""); // Search term state
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const open = Boolean(anchorEl);
-  const handleClick = (event, id) => {
+  const handleClick = (event, id, name) => {
     setAnchorEl(event.currentTarget);
     setUserId(id);
+    setName(name);
   };
   const handleClose = () => {
     setAnchorEl(null);
@@ -61,7 +66,7 @@ const Registars = () => {
 
   const { data: registars } = useGetFormsQuery();
 
-  const status = registars?.filter((r) => r.status_pendaftaran === "Menunggu");
+  const status = registars?.filter((r) => r.status_pendaftaran === "Diproses");
 
   const filteredData = status?.filter((item) =>
     item.kode_pendaftaran.toLowerCase().includes(searchTerm.toLowerCase())
@@ -109,6 +114,13 @@ const Registars = () => {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  };
+
+  // Detail page
+  const detailPage = () => {
+    const formattedName = name.replace(/\s+/g, "-");
+
+    navigate(`/admin/pelajar/${userId}/${formattedName}`);
   };
 
   return (
@@ -165,7 +177,7 @@ const Registars = () => {
                         aria-controls={open ? "basic-menu" : undefined}
                         aria-haspopup="true"
                         aria-expanded={open ? "true" : undefined}
-                        onClick={(e) => handleClick(e, item.userid)}
+                        onClick={(e) => handleClick(e, item.userid, item.nama)}
                       >
                         <MoreVertIcon />
                       </IconButton>
@@ -201,7 +213,7 @@ const Registars = () => {
         <MenuItem onClick={accpetHandler}>Diterima</MenuItem>
         <MenuItem onClick={rejectHandler}>Ditolak</MenuItem>
         <MenuItem>Berkas</MenuItem>
-        <MenuItem>Detail</MenuItem>
+        <MenuItem onClick={detailPage}>Detail</MenuItem>
       </Menu>
     </Layout>
   );

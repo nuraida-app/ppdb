@@ -19,10 +19,12 @@ import User from "./User";
 import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 import { useSelector } from "react-redux";
 import { useGetFormQuery } from "../api/service/formApi";
+import { useGetAppQuery } from "../api/service/appApi";
 
 const Profile = () => {
   const { user } = useSelector((state) => state.user);
   const { data: profile } = useGetFormQuery(user?.id, { skip: !user?.id });
+  const { data: app } = useGetAppQuery();
 
   const photo = profile?.berkas?.find((item) => item["Foto"])?.Foto;
 
@@ -56,37 +58,16 @@ const Profile = () => {
             sx={{
               display: "flex",
               flexDirection: "column",
-              gap: 1,
+
               px: 2,
               py: 2,
             }}
           >
-            <Box sx={{ display: "flex", gap: 1 }}>
+            <Box sx={{ display: "flex" }}>
               <img
-                src="/nibs.png"
-                style={{ width: 80, height: 80, objectFit: "cover" }}
+                src={app?.kop_surat}
+                style={{ width: "100%", height: 100, objectFit: "cover" }}
               />
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                }}
-              >
-                <Typography variant="h6" fontSize={14}>
-                  YAYASAN IZZATUL MUHSININ
-                </Typography>
-                <Typography variant="subtitle1" fontSize={12}>
-                  NURAIDA ISLAMIC BOARDING SCHOOL
-                </Typography>
-                <Typography variant="subtitle2" fontSize={10}>
-                  Membina Generasi Rabbani, Berpertasi Menuju Ridho Ilahi
-                </Typography>
-                <Typography variant="body2" fontSize={8}>
-                  Jl Guru Mukhtar No 01 Rt 03 Rw 03 Kp Petir Kel Cimahpar Kec
-                  Bogor Utara Kota Bogor
-                </Typography>
-              </Box>
             </Box>
             <Divider />
 
@@ -121,11 +102,13 @@ const Profile = () => {
                     <td>{profile?.nama}</td>
                   </tr>
                   <tr>
-                    <td style={{ width: "150px" }}>Tempat Tanggal Lahir</td>
+                    <td style={{ width: "150px" }}>Tempat Tgl Lahir</td>
                     <td align="center" style={{ width: "30px" }}>
                       :
                     </td>
-                    <td>{profile?.tempat_lahir}</td>
+                    <td>{`${profile?.tempat_lahir}, ${new Date(
+                      profile?.tanggal_lahir
+                    ).toLocaleDateString("id-ID")}`}</td>
                   </tr>
                   <tr>
                     <td style={{ width: "150px" }}>Jenis Kelamin</td>
@@ -446,7 +429,7 @@ const Profile = () => {
             <Typography variant="subtitle1" fontWeight="bold" fontSize={14}>
               Lainnya
             </Typography>
-            <Paper sx={{ p: 1 }}>
+            <Box sx={{ p: 1 }}>
               <Grid2 container>
                 <Grid2 item size={{ xs: 6, md: 6 }} sx={{ p: 1 }}>
                   <Typography
@@ -504,7 +487,30 @@ const Profile = () => {
                   </Table>
                 </Grid2>
               </Grid2>
-            </Paper>
+            </Box>
+
+            <Typography fontSize={12}>
+              * Dengan ini saya menyatakan bahwa data yang diisikan adalah benar
+              dan sesuai dengan dokumen yang dilampirkan
+            </Typography>
+
+            <Box
+              alignSelf="end"
+              sx={{
+                height: 100,
+                mt: 1,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography fontSize={12}>{`${profile?.regional}, ${new Date(
+                profile?.createdat
+              ).toLocaleDateString("id-ID")}`}</Typography>
+              <Typography align="center" fontSize={12}>
+                {`(.................................)`}
+              </Typography>
+            </Box>
           </Paper>
         </Grid2>
         <Grid2 item size={{ xs: 12, md: 4 }} sx={{ p: 2 }}>

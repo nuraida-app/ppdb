@@ -20,6 +20,9 @@ export const statisticApi = createApi({
       query: () => "/pembayaran",
       providesTags: ["payment"],
     }),
+    getMedia: buidder.query({
+      query: () => "/sosial-media",
+    }),
   }),
 });
 
@@ -27,4 +30,5 @@ export const {
   useGetDemographicQuery,
   useGetDataQuery,
   useGetDataPaymentsQuery,
+  useGetMediaQuery,
 } = statisticApi;

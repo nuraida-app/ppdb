@@ -24,6 +24,7 @@ import {
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import "./styles.css";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const colums = [
   { label: "No", width: 40 },
@@ -35,16 +36,20 @@ const colums = [
 ];
 
 const Rejected = () => {
+  const navigate = useNavigate();
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [userId, setUserId] = useState("");
+  const [name, setName] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const open = Boolean(anchorEl);
-  const handleClick = (event, id) => {
+  const handleClick = (event, id, name) => {
     setAnchorEl(event.currentTarget);
     setUserId(id);
+    setName(name);
   };
   const handleClose = () => {
     setAnchorEl(null);
@@ -112,6 +117,13 @@ const Rejected = () => {
     setPage(0);
   };
 
+  // Detail page
+  const detailPage = () => {
+    const formattedName = name.replace(/\s+/g, "-");
+
+    navigate(`/admin/pelajar/${userId}/${formattedName}`);
+  };
+
   return (
     <Layout>
       <Paper sx={{ p: 1 }}>
@@ -166,7 +178,7 @@ const Rejected = () => {
                         aria-controls={open ? "basic-menu" : undefined}
                         aria-haspopup="true"
                         aria-expanded={open ? "true" : undefined}
-                        onClick={(e) => handleClick(e, item.userid)}
+                        onClick={(e) => handleClick(e, item.userid, item.nama)}
                       >
                         <MoreVertIcon />
                       </IconButton>
@@ -199,10 +211,10 @@ const Rejected = () => {
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem onClick={waitHanlder}>Menunggu</MenuItem>
+        <MenuItem onClick={waitHanlder}>Diproses</MenuItem>
         <MenuItem onClick={acceptHandler}>Diterima</MenuItem>
         <MenuItem>Berkas</MenuItem>
-        <MenuItem>Detail</MenuItem>
+        <MenuItem onClick={detailPage}>Detail</MenuItem>
       </Menu>
     </Layout>
   );

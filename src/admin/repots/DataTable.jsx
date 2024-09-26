@@ -19,7 +19,7 @@ const DataTable = ({ data }) => {
 
   useEffect(() => {
     const filtered = data?.filter((item) =>
-      item.nama.toLowerCase().includes(search.toLowerCase())
+      item.nama?.toLowerCase().includes(search.toLowerCase())
     );
     setFilteredData(filtered);
   }, [search, data]);

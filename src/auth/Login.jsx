@@ -113,15 +113,6 @@ const Login = ({ open, close }) => {
               >
                 {isLoading ? <CircularProgress size={24} /> : "Masuk"}
               </Button>
-
-              <Button
-                variant="contained"
-                color="error"
-                startIcon={<GoogleIcon />}
-                sx={{ textTransform: "none" }}
-              >
-                Google
-              </Button>
             </Box>
           </form>
         </Box>

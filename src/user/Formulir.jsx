@@ -24,6 +24,8 @@ import { useGetSchoolsQuery } from "../api/service/schoolApi";
 import Family from "../form/Family";
 import { useSelector } from "react-redux";
 import { useGetFormQuery } from "../api/service/formApi";
+import Questionnaire from "../form/Questionnaire";
+import Schedule from "../form/Schedule";
 
 const Formulir = () => {
   const [activeTab, setActiveTab] = useState("Data Diri");
@@ -52,6 +54,8 @@ const Formulir = () => {
     { name: "Kesehatan", component: <Health /> },
     { name: "Keluarga", component: <Family /> },
     { name: "Berkas", component: <Attachment /> },
+    { name: "Jadwal", component: <Schedule /> },
+    { name: "Kuisioner", component: <Questionnaire /> },
   ];
 
   const currentTab = tabs.find((tab) => tab.name === activeTab)?.component;
@@ -66,6 +70,8 @@ const Formulir = () => {
               flexDirection: "column",
               alignItems: "center",
               gap: 1,
+              mb: 2,
+              p: 1,
             }}
           >
             <Avatar
@@ -80,29 +86,14 @@ const Formulir = () => {
           </Box>
         </Grid2>
 
-        <Grid2 item size={{ xs: 12, md: 7 }} sx={{ px: 4, py: 1 }}>
-          <Box textAlign="center" sx={{ display: { xs: "none", md: "block" } }}>
-            <ButtonGroup>
-              {tabs.map((tab) => (
-                <Button
-                  key={tab.name}
-                  variant={activeTab === tab.name ? "contained" : "outlined"}
-                  sx={{ textTransform: "none" }}
-                  onClick={() => setActiveTab(tab.name)}
-                >
-                  {tab.name}
-                </Button>
-              ))}
-            </ButtonGroup>
-          </Box>
-
+        <Grid2 item size={{ xs: 12, md: 7 }} sx={{ px: 2, py: 1 }}>
           <Button
             fullWidth
             variant="contained"
             color="primary"
             endIcon={<KeyboardArrowDownIcon />}
             onClick={handleClick}
-            sx={{ display: { xs: "flex", md: "none" }, mb: 2 }}
+            sx={{ mb: 2 }}
           >
             {activeTab}
           </Button>
@@ -115,11 +106,11 @@ const Formulir = () => {
             onClose={handleClose}
             anchorOrigin={{
               vertical: "top",
-              horizontal: "left",
+              horizontal: "right",
             }}
             transformOrigin={{
               vertical: "top",
-              horizontal: "left",
+              horizontal: "right",
             }}
           >
             {tabs.map((tab) => (

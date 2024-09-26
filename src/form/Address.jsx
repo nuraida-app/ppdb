@@ -42,7 +42,7 @@ const Address = () => {
   const [postalCode, setPostalCode] = useState("");
   const [distance, setDistance] = useState("");
   const [minutes, setMinutes] = useState("");
-  const [transport, setTransport] = useState("Jalan Kaki");
+  const [transport, setTransport] = useState("--Pilih Transportasi--");
 
   const [selectedProvince, setSelectedProvince] = useState({
     id: "",
@@ -168,7 +168,9 @@ const Address = () => {
       setPostalCode(alamat?.kode_pos);
       setDistance(alamat?.jarak);
       setMinutes(alamat?.menit);
-      setTransport(alamat?.transportasi);
+      setTransport(
+        alamat?.transportasi ? alamat?.transportasi : "--Pilih Transportasi--"
+      );
     }
   }, [alamat]);
 
@@ -308,10 +310,15 @@ const Address = () => {
               label="Transportasi"
               onChange={(e) => setTransport(e.target.value)}
             >
+              <MenuItem value="--Pilih Transportasi--">
+                Pilih Transportasi
+              </MenuItem>
               <MenuItem value="Jalan Kaki">Jalan Kaki</MenuItem>
               <MenuItem value="Angkutan Umum">Angkutan Umum</MenuItem>
               <MenuItem value="Sepeda Motor">Sepeda Motor</MenuItem>
               <MenuItem value="Sepeda">Sepeda</MenuItem>
+              <MenuItem value="Mobil Pribadi">Mobil Pribadi</MenuItem>
+              <MenuItem value="Jemputan">Jemputan</MenuItem>
             </Select>
           </FormControl>
         </Box>

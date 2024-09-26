@@ -7,13 +7,14 @@ import Announcements from "../components/announce/Announcements";
 import { useGetPostsQuery } from "../api/service/postApi";
 
 const Homepage = () => {
-  const category = "pengumuman";
-  const { data } = useGetPostsQuery(category);
+  const { data } = useGetPostsQuery();
+
+  const posts = data?.filter((d) => d.kategori === "pengumuman");
   return (
     <Layout>
       <Grid2 container sx={{ px: { xs: 1, md: 12 } }}>
         <Grid2 item size={{ xs: 12, md: 9 }} sx={{ p: 1 }}>
-          <Announcements data={data} />
+          <Announcements data={posts} />
         </Grid2>
         <Grid2 item size={{ xs: 12, md: 3 }} sx={{ p: 1 }}>
           <Info />

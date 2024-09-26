@@ -24,8 +24,20 @@ export const userApi = createApi({
       }),
       invalidatesTags: ["admin"],
     }),
+    updateUser: builder.mutation({
+      query: (body) => ({
+        url: "/update-user",
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: ["user"],
+    }),
   }),
 });
 
-export const { useGetUsersQuery, useGetAdminQuery, useUpdateAdminMutation } =
-  userApi;
+export const {
+  useGetUsersQuery,
+  useGetAdminQuery,
+  useUpdateAdminMutation,
+  useUpdateUserMutation,
+} = userApi;

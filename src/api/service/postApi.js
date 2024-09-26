@@ -9,8 +9,8 @@ export const postApi = createApi({
   tagTypes: ["post", "posts"],
   endpoints: (builder) => ({
     getPosts: builder.query({
-      query: (category) => ({
-        url: `/tampilkan/${category}`,
+      query: () => ({
+        url: `/tampilkan`,
         method: "GET",
       }),
       providesTags: ["posts"],

@@ -25,7 +25,9 @@ const School = lazy(() => import("./admin/main_data/School"));
 const Requierment = lazy(() => import("./admin/main_data/Requierment"));
 const TitutionFee = lazy(() => import("./admin/main_data/TitutionFee"));
 const Annoucement = lazy(() => import("./admin/main_data/Annoucement"));
+const Schedules = lazy(() => import("./admin/main_data/Schedules"));
 const Contacts = lazy(() => import("./admin/main_data/Contacts"));
+const Questionnaires = lazy(() => import("./admin/main_data/Questionnaires"));
 const Registars = lazy(() => import("./admin/enrollment/Registars"));
 const Accepted = lazy(() => import("./admin/enrollment/Accepted"));
 const Rejected = lazy(() => import("./admin/enrollment/Rejected"));
@@ -74,7 +76,11 @@ function App() {
 
           <Route path="/admin/pengumuman" element={<Annoucement />} />
 
+          <Route path="/admin/jadwal" element={<Schedules />} />
+
           <Route path="/admin/narahubung" element={<Contacts />} />
+
+          <Route path="/admin/kuisioner" element={<Questionnaires />} />
 
           <Route path="/admin/pelajar" element={<Registars />} />
 

@@ -256,7 +256,7 @@ const Accepted = () => {
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem onClick={waitHanlder}>Menunggu</MenuItem>
+        <MenuItem onClick={waitHanlder}>Diproses</MenuItem>
         <MenuItem onClick={rejectHandler}>Ditolak</MenuItem>
         <MenuItem onClick={detailPage}>Detail</MenuItem>
       </Menu>

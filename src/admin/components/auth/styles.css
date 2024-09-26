@@ -139,9 +139,9 @@ body {
 
 .form-wrapper {
   position: absolute;
-  padding: 2rem 4rem;
+  padding: 2rem 2rem;
   height: 200px;
-  width: 450px;
+  width: 350px;
   background: rgba(255, 253, 253, 0.16);
   border-radius: 16px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);

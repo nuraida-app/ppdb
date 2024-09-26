@@ -87,45 +87,47 @@ const Transactions = () => {
         />
       </Box>
 
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              {["No", "Nama", "Nominal", "Tanggal"].map((item) => (
-                <TableCell key={item} align="center">
-                  {item}
-                </TableCell>
+      {data && (
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                {["No", "Nama", "Nominal", "Tanggal"].map((item) => (
+                  <TableCell key={item} align="center">
+                    {item}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {result?.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell align="center">{index + 1}</TableCell>
+                  <TableCell>{item.nama}</TableCell>
+                  <TableCell align="center">{`Rp ${parseFloat(
+                    item.nominal
+                  ).toLocaleString("id-ID")}`}</TableCell>
+                  <TableCell align="center">
+                    {new Date(item.createdat).toLocaleDateString("id-ID")}
+                  </TableCell>
+                </TableRow>
               ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {result?.map((item, index) => (
-              <TableRow key={index}>
-                <TableCell align="center">{index + 1}</TableCell>
-                <TableCell>{item.nama}</TableCell>
-                <TableCell align="center">{`Rp ${parseFloat(
-                  item.nominal
-                ).toLocaleString("id-ID")}`}</TableCell>
-                <TableCell align="center">
-                  {new Date(item.createdat).toLocaleDateString("id-ID")}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TableCell colSpan={4}>
+                  <p>{`Laporan Tanggal: ${new Date(start).toLocaleDateString(
+                    "id-ID"
+                  )} - ${new Date(end).toLocaleDateString("id-ID")}`}</p>
+                  <p>{`Pendapatan: Rp ${parseFloat(
+                    totalTransactions
+                  ).toLocaleString("id-ID")}`}</p>
                 </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TableCell colSpan={4}>
-                <p>{`Laporan Tanggal: ${new Date(start).toLocaleDateString(
-                  "id-ID"
-                )} - ${new Date(end).toLocaleDateString("id-ID")}`}</p>
-                <p>{`Pendapatan: Rp ${parseFloat(
-                  totalTransactions
-                ).toLocaleString("id-ID")}`}</p>
-              </TableCell>
-            </TableRow>
-          </TableFooter>
-        </Table>
-      </TableContainer>
+            </TableFooter>
+          </Table>
+        </TableContainer>
+      )}
     </Paper>
   );
 };

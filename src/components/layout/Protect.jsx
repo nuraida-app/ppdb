@@ -17,9 +17,13 @@ const Protect = () => {
   }, [user, navigate]);
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      navigate("/");
-    }
+    const timeout = setTimeout(() => {
+      if (!isLoggedIn) {
+        navigate("/");
+      }
+    }, 2000);
+
+    return () => clearTimeout(timeout);
   }, [isLoggedIn]);
 };
 
