@@ -58,15 +58,17 @@ router.post(
   role("user"),
   uploadImg.single("file"),
   async (req, res) => {
-    const { name, price } = req.body;
+    const { name, price, media } = req.body;
+
+    const status = "Diproses";
 
     const imgLink =
       process.env.SERVER + "/assets/pembayaran/" + req.file.filename;
 
     await client.query(
-      `INSERT INTO pembayaran(nama, nominal, bukti, user_id)
-        VALUES($1, $2, $3, $4) RETURNING *`,
-      [name, price, imgLink, req.user.id]
+      `INSERT INTO pembayaran(nama, nominal, bukti, user_id, media, status)
+        VALUES($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [name, price, imgLink, req.user.id, media, status]
     );
 
     res.status(200).json({ message: "Bukti diterima" });
@@ -87,7 +89,7 @@ router.put(
     try {
       const confirm = "Terkonfirmasi";
       const year = new Date().getFullYear();
-      const status = "Menunggu";
+      const status = "Diproses";
 
       const data = await client.query(
         `SELECT * FROM pembayaran WHERE user_id = $1`,

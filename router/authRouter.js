@@ -37,7 +37,7 @@ router.post("/daftar-admin", async (req, res) => {
 // Daftar (Pendaftaran pengguna baru)
 router.post("/daftar", async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, phone } = req.body;
 
     const data = await client.query(`SELECT * FROM "user" WHERE email = $1`, [
       email,
@@ -52,8 +52,8 @@ router.post("/daftar", async (req, res) => {
 
     const role = "user";
     const user = await client.query(
-      `INSERT INTO "user" (name, email, password, role) VALUES($1, $2, $3, $4) RETURNING *`,
-      [name, email, hash, role]
+      `INSERT INTO "user" (name, email, password, phone, role) VALUES($1, $2, $3, $4, $5) RETURNING *`,
+      [name, email, hash, phone, role]
     );
 
     const token = generateToken(user.rows[0]);

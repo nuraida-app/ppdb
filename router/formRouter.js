@@ -35,7 +35,7 @@ router.get("/download-csv", async (req, res) => {
     INNER JOIN tapel ON tapel.id = pendaftar.tapel_id
     INNER JOIN sekolah ON sekolah.id = pendaftar.sekolah_id
     WHERE pendaftar.status_pendaftaran = 'Diterima'
-    ORDER BY createdat ASC
+    ORDER BY pendaftar.createdat ASC
   `;
 
   try {
@@ -152,7 +152,8 @@ router.get("/:userId", isUser, role("admin", "user"), async (req, res) => {
       pendaftar.tlp_ibu, pendaftar.npsn, pendaftar.nama_sekolah, pendaftar.provinsi_sekolah,
       pendaftar.regional_sekolah, pendaftar.kec_sekolah, pendaftar.desa_sekolah, pendaftar.berkas,
       pendaftar.provinsi_id_sekolah, pendaftar.regional_id_sekolah, pendaftar.kec_id_sekolah,
-      pendaftar.desa_id_sekolah, pendaftar.keluarga, pendaftar.kesehatan
+      pendaftar.desa_id_sekolah, pendaftar.keluarga, pendaftar.kesehatan, pendaftar.createdat,
+      pendaftar.userid
       FROM pendaftar 
        INNER JOIN jenjang ON jenjang.id = pendaftar.jenjang_id
          INNER JOIN tapel ON tapel.id = pendaftar.tapel_id
@@ -160,8 +161,6 @@ router.get("/:userId", isUser, role("admin", "user"), async (req, res) => {
           WHERE userid = $1`,
       [req.params.userId]
     );
-
-    console.log(data);
 
     if (data.rowCount > 0) {
       const formulir = data.rows[0];
@@ -226,7 +225,7 @@ router.put("/ditolak/:userid", isUser, role("admin"), async (req, res) => {
   }
 });
 
-// Menunggu
+// Diproses
 router.put("/menunggu/:userid", isUser, role("admin"), async (req, res) => {
   try {
     const data = await client.query(
@@ -234,7 +233,7 @@ router.put("/menunggu/:userid", isUser, role("admin"), async (req, res) => {
       [req.params.userid]
     );
 
-    const status = "Menunggu";
+    const status = "Diproses";
 
     if (data.rowCount > 0) {
       await client.query(

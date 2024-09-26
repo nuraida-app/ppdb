@@ -95,4 +95,36 @@ router.get("/pembayaran", isUser, role("admin"), async (req, res) => {
   }
 });
 
+router.get("/sosial-media", isUser, role("admin"), async (req, res) => {
+  try {
+    // Query to get the count of each media type
+    const mediaCounts = await client.query(
+      `SELECT media, COUNT(*) as count 
+       FROM pembayaran 
+       GROUP BY media`
+    );
+
+    // Total count of all media
+    const total = mediaCounts.rows.reduce(
+      (acc, item) => acc + parseInt(item.count),
+      0
+    );
+
+    // Calculate percentage for each media
+    const mediaAnalysis = mediaCounts.rows.map((item) => {
+      const percentage = ((item.count / total) * 100).toFixed();
+      return {
+        media: item.media,
+        count: item.count,
+        percentage: percentage,
+      };
+    });
+
+    res.status(200).json(mediaAnalysis);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
 export default router;

@@ -22,6 +22,8 @@ import areaRouter from "./router/areaRouter.js";
 import formRouter from "./router/formRouter.js";
 import statisticRouter from "./router/statisticRouter.js";
 import chatRouter from "./router/chatRouter.js";
+import scheduleRouter from "./router/scheduleRouter.js";
+import quizRouter from "./router/quizRouter.js";
 
 app.use(
   cors({
@@ -53,5 +55,7 @@ app.use("/wilayah", areaRouter);
 app.use("/formulir", formRouter);
 app.use("/statistik", statisticRouter);
 app.use("/pesan", chatRouter);
+app.use("/jadwal", scheduleRouter);
+app.use("/kuis", quizRouter);
 
 export default app;

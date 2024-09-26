@@ -22,29 +22,31 @@ router.get("/admin", async (req, res) => {
   }
 });
 
-router.put("/update-admin", isUser, role("admin"), async (req, res) => {
+router.put("/update-user", isUser, role("user"), async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-    const id = 1;
+    const { name, email, password, phone } = req.body;
+
+    const id = req.user.id;
 
     if (password) {
       const hash = await bcrypt.hash(password, 10);
 
       await client.query(
-        `UPDATE admin SET name = $1, email = $2, password = $3
-        WHERE id = $4`,
-        [name, email, hash, id]
+        `UPDATE "user" SET name = $1, email = $2, password = $3, phone = $4
+        WHERE id = $5`,
+        [name, email, hash, phone, id]
       );
     } else {
       await client.query(
-        `UPDATE admin SET name = $1, email = $2
-        WHERE id = $3`,
-        [name, email, id]
+        `UPDATE "user" SET name = $1, email = $2, phone = $3
+        WHERE id = $4`,
+        [name, email, phone, id]
       );
     }
 
     res.status(200).json({ message: "Data berhasil diperbarui" });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: error.message });
   }
 });

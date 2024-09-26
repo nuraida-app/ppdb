@@ -4,11 +4,9 @@ import { isUser, role } from "../middlewares/Auth.js";
 
 const router = express.Router();
 
-router.get("/tampilkan/:kategory", async (req, res) => {
+router.get("/tampilkan/", async (req, res) => {
   try {
-    const data = await client.query(`SELECT * FROM posts WHERE kategori = $1`, [
-      req.params.kategory,
-    ]);
+    const data = await client.query(`SELECT * FROM posts ORDER BY id ASC`);
 
     const post = data.rows;
 

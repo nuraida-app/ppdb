@@ -10,6 +10,15 @@ const config = {
   port: 5432, // default port
 };
 
+// Production
+// const config = {
+//   user: "postgres",
+//   password: "nibs2024*",
+//   host: "localhost",
+//   database: "nibs_ppdb",
+//   port: 5432,
+// };
+
 const client = new Client(config);
 
 const connect = async () => {
