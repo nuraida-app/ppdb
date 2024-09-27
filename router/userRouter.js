@@ -81,4 +81,41 @@ router.get("/tampilkan", isUser, role("admin"), async (req, res) => {
   }
 });
 
+// Recovery
+router.get("/temukan-email/:email", async (req, res) => {
+  try {
+    const data = await client.query(`SELECT * FROM "user" WHERE email = $1`, [
+      req.params.email,
+    ]);
+
+    if (data.rowCount > 0) {
+      const user = data.rows[0];
+
+      res.status(200).json({ user, message: "Email ditemukan" });
+    } else {
+      return res.status(404).json({ message: "Email tidak ditemukan" });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+router.post("/pulihkan-akun", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const hash = await bcrypt.hash(password, 10);
+
+    await client.query(
+      `UPDATE "user" SET password = $1
+        WHERE email = $2`,
+      [hash, email]
+    );
+
+    res.status(200).json({ message: "Password password berhasil diperbarui" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
 export default router;
