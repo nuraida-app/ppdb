@@ -34,9 +34,12 @@ app.use(
       process.env.DOMAIN_4,
       process.env.DOMAIN_5,
     ],
+    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed methods
+    allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
     credentials: true,
   })
 );
+
 app.use(cookieParser());
 app.use(express.json()); // Untuk menangani JSON
 app.use(express.urlencoded({ extended: true })); // Untuk menangani form URL-encoded

@@ -153,7 +153,7 @@ router.get("/:userId", isUser, role("admin", "user"), async (req, res) => {
       pendaftar.regional_sekolah, pendaftar.kec_sekolah, pendaftar.desa_sekolah, pendaftar.berkas,
       pendaftar.provinsi_id_sekolah, pendaftar.regional_id_sekolah, pendaftar.kec_id_sekolah,
       pendaftar.desa_id_sekolah, pendaftar.keluarga, pendaftar.kesehatan, pendaftar.createdat,
-      pendaftar.userid
+      pendaftar.userid, pendaftar.berkas
       FROM pendaftar 
        INNER JOIN jenjang ON jenjang.id = pendaftar.jenjang_id
          INNER JOIN tapel ON tapel.id = pendaftar.tapel_id
