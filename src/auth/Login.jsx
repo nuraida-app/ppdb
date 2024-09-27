@@ -43,6 +43,8 @@ const Login = ({ open, close }) => {
     login(data);
   };
 
+  const recovery = () => navigate("/pemulihan-akun");
+
   useEffect(() => {
     if (isSuccess) {
       localStorage.setItem("login", JSON.stringify("login"));
@@ -114,6 +116,15 @@ const Login = ({ open, close }) => {
                 {isLoading ? <CircularProgress size={24} /> : "Masuk"}
               </Button>
             </Box>
+
+            <Typography
+              align="center"
+              fontSize={10}
+              sx={{ cursor: "pointer" }}
+              onClick={recovery}
+            >
+              Lupa password?
+            </Typography>
           </form>
         </Box>
       </Fade>

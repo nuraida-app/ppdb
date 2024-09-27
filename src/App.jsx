@@ -16,6 +16,7 @@ const UserPage = lazy(() => import("./user/UserPage"));
 const Formulir = lazy(() => import("./user/Formulir"));
 const Payment = lazy(() => import("./user/Payment"));
 const Profile = lazy(() => import("./user/Profile"));
+const Recovery = lazy(() => import("./auth/Recovery"));
 
 // ADMIN
 const AdminPage = lazy(() => import("./admin/dashboard/AdminPage"));
@@ -58,6 +59,8 @@ function App() {
       <Suspense fallback={<Loader />}>
         <Routes>
           <Route path="/" element={<Homepage />} />
+
+          <Route path="/pemulihan-akun" element={<Recovery />} />
 
           {/* Admin */}
           <Route path="/admin/login" element={<Login />} />

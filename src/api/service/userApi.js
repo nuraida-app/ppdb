@@ -32,6 +32,19 @@ export const userApi = createApi({
       }),
       invalidatesTags: ["user"],
     }),
+    findEmail: builder.mutation({
+      query: (email) => ({
+        url: `/temukan-email/${email}`,
+        method: "GET",
+      }),
+    }),
+    recoverPassword: builder.mutation({
+      query: (body) => ({
+        url: "/pulihkan-akun",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -40,4 +53,6 @@ export const {
   useGetAdminQuery,
   useUpdateAdminMutation,
   useUpdateUserMutation,
+  useFindEmailMutation,
+  useRecoverPasswordMutation,
 } = userApi;
