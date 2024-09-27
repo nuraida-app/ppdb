@@ -14,6 +14,9 @@ import {
   TableRow,
   TablePagination,
   Typography,
+  ListItemButton,
+  ListItemText,
+  ListItemAvatar,
 } from "@mui/material";
 import {
   useAcceptedMutation,
@@ -25,12 +28,13 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import "./styles.css";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 
 const colums = [
   { label: "No", width: 40 },
   { label: "Kode Pendaftaran", width: 80 },
   { label: "Pendaftar", width: 120 },
-  { label: "Asal Sekolah", width: 120 },
+  { label: "Whatsapp", width: 120 },
   { label: "Status", width: 80 },
   { label: "Aksi", width: 30 },
 ];
@@ -167,7 +171,35 @@ const Rejected = () => {
                       {item.kode_pendaftaran}
                     </TableCell>
                     <TableCell>{item.nama}</TableCell>
-                    <TableCell>{item.nama_sekolah}</TableCell>
+                    <TableCell>
+                      <ListItemButton
+                        onClick={() =>
+                          window.open(
+                            `https://wa.me/${item.tlp_ayah}`,
+                            "_blank"
+                          )
+                        }
+                      >
+                        <ListItemAvatar>
+                          <WhatsAppIcon color="success" />
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary="Ayah"
+                          secondary={item.tlp_ayah}
+                        />
+                      </ListItemButton>
+
+                      <ListItemButton
+                        onClick={() =>
+                          window.open(`https://wa.me/${item.tlp_ibu}`, "_blank")
+                        }
+                      >
+                        <ListItemAvatar>
+                          <WhatsAppIcon color="success" />
+                        </ListItemAvatar>
+                        <ListItemText primary="ibu" secondary={item.tlp_ibu} />
+                      </ListItemButton>
+                    </TableCell>
                     <TableCell align="center">
                       <div className="ditolak">{item.status_pendaftaran}</div>
                     </TableCell>
@@ -213,7 +245,6 @@ const Rejected = () => {
       >
         <MenuItem onClick={waitHanlder}>Diproses</MenuItem>
         <MenuItem onClick={acceptHandler}>Diterima</MenuItem>
-        <MenuItem>Berkas</MenuItem>
         <MenuItem onClick={detailPage}>Detail</MenuItem>
       </Menu>
     </Layout>

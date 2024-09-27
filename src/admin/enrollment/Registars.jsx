@@ -14,6 +14,9 @@ import {
   TableRow,
   TablePagination,
   Typography,
+  ListItemButton,
+  ListItemText,
+  ListItemAvatar,
 } from "@mui/material";
 import {
   useAcceptedMutation,
@@ -24,12 +27,13 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import "./styles.css";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 
 const colums = [
   { label: "No", width: 40 },
   { label: "Kode Pendaftaran", width: 80 },
   { label: "Pendaftar", width: 120 },
-  { label: "Asal Sekolah", width: 120 },
+  { label: "Whatsapp", width: 120 },
   { label: "Status", width: 80 },
   { label: "Aksi", width: 30 },
 ];
@@ -43,12 +47,14 @@ const Registars = () => {
   const [searchTerm, setSearchTerm] = useState(""); // Search term state
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [selectedBerkas, setSelectedBerkas] = useState([]);
 
   const open = Boolean(anchorEl);
-  const handleClick = (event, id, name) => {
+  const handleClick = (event, id, name, berkas) => {
     setAnchorEl(event.currentTarget);
     setUserId(id);
     setName(name);
+    setSelectedBerkas(berkas || []);
   };
   const handleClose = () => {
     setAnchorEl(null);
@@ -127,7 +133,7 @@ const Registars = () => {
     <Layout>
       <Paper sx={{ p: 1 }}>
         <Typography variant="h6" fontWeight="bold">
-          Pendaftar
+          Pendaftar Baru
         </Typography>
 
         {/* Search Input */}
@@ -166,7 +172,35 @@ const Registars = () => {
                       {item.kode_pendaftaran}
                     </TableCell>
                     <TableCell>{item.nama}</TableCell>
-                    <TableCell>{item.nama_sekolah}</TableCell>
+                    <TableCell>
+                      <ListItemButton
+                        onClick={() =>
+                          window.open(
+                            `https://wa.me/${item.tlp_ayah}`,
+                            "_blank"
+                          )
+                        }
+                      >
+                        <ListItemAvatar>
+                          <WhatsAppIcon color="success" />
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary="Ayah"
+                          secondary={item.tlp_ayah}
+                        />
+                      </ListItemButton>
+
+                      <ListItemButton
+                        onClick={() =>
+                          window.open(`https://wa.me/${item.tlp_ibu}`, "_blank")
+                        }
+                      >
+                        <ListItemAvatar>
+                          <WhatsAppIcon color="success" />
+                        </ListItemAvatar>
+                        <ListItemText primary="ibu" secondary={item.tlp_ibu} />
+                      </ListItemButton>
+                    </TableCell>
                     <TableCell align="center">
                       <div className="menunggu">{item.status_pendaftaran}</div>
                     </TableCell>
@@ -177,7 +211,9 @@ const Registars = () => {
                         aria-controls={open ? "basic-menu" : undefined}
                         aria-haspopup="true"
                         aria-expanded={open ? "true" : undefined}
-                        onClick={(e) => handleClick(e, item.userid, item.nama)}
+                        onClick={(e) =>
+                          handleClick(e, item.userid, item.nama, item.berkas)
+                        }
                       >
                         <MoreVertIcon />
                       </IconButton>
@@ -212,7 +248,6 @@ const Registars = () => {
       >
         <MenuItem onClick={accpetHandler}>Diterima</MenuItem>
         <MenuItem onClick={rejectHandler}>Ditolak</MenuItem>
-        <MenuItem>Berkas</MenuItem>
         <MenuItem onClick={detailPage}>Detail</MenuItem>
       </Menu>
     </Layout>
