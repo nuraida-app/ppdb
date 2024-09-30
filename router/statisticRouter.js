@@ -95,7 +95,7 @@ router.get("/pembayaran", isUser, role("admin"), async (req, res) => {
   }
 });
 
-router.get("/sosial-media", isUser, role("admin"), async (req, res) => {
+router.get("/sosial-media", async (req, res) => {
   try {
     // Query to get the count of each media type
     const mediaCounts = await client.query(
