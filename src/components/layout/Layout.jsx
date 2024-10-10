@@ -153,12 +153,17 @@ const Layout = ({ children }) => {
                 </IconButton>
               )}
 
-              <IconButton
-                sx={{ display: { xs: "block", md: "none" }, color: "inherit" }}
-                onClick={handleClick}
-              >
-                <MenuIcon />
-              </IconButton>
+              {user && (
+                <IconButton
+                  sx={{
+                    display: { xs: "block", md: "none" },
+                    color: "inherit",
+                  }}
+                  onClick={handleClick}
+                >
+                  <MenuIcon />
+                </IconButton>
+              )}
 
               <Menu
                 id="demo-positioned-menu"
