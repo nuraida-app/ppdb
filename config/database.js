@@ -2,22 +2,22 @@ import pkg from "pg";
 
 const { Client } = pkg;
 
-const config = {
-  user: "postgres",
-  password: "13090122",
-  host: "localhost",
-  database: "nuraida_ppdb",
-  port: 5432, // default port
-};
-
-// Production
 // const config = {
 //   user: "postgres",
-//   password: "nibs2024*",
+//   password: "13090122",
 //   host: "localhost",
-//   database: "nibs_ppdb",
-//   port: 5432,
+//   database: "nuraida_ppdb",
+//   port: 5432, // default port
 // };
+
+// Production
+const config = {
+  user: "postgres",
+  password: "nibs2024*",
+  host: "103.245.38.61",
+  database: "nibs_ppdb",
+  port: 5432,
+};
 
 const client = new Client(config);
 
