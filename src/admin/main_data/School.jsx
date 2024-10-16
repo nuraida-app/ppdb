@@ -135,7 +135,13 @@ const School = () => {
           </Paper>
         </Grid2>
         <Grid2 item size={{ xs: 12, md: 4 }} sx={{ py: 1, px: 4 }}>
-          <Paper sx={{ p: 1 }}>
+          <Paper
+            sx={{
+              p: 1,
+              position: "fixed",
+              width: { md: 300, lg: 400, xl: 400 },
+            }}
+          >
             <form onSubmit={submitHandler}>
               <Box sx={{ display: "flex", gap: 1 }}>
                 <Input

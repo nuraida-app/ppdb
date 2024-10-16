@@ -184,7 +184,14 @@ const Schedules = () => {
           </Paper>
         </Grid2>
         <Grid2 item size={{ xs: 12, md: 3 }}>
-          <Paper sx={{ px: 1, py: 2 }}>
+          <Paper
+            sx={{
+              px: 1,
+              py: 2,
+              position: "fixed",
+              width: { lg: 300, xl: 330 },
+            }}
+          >
             <form
               style={{
                 display: "flex",

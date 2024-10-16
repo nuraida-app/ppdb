@@ -144,7 +144,7 @@ const Contacts = () => {
           </Paper>
         </Grid2>
         <Grid2 item size={{ xs: 12, md: 4 }} sx={{ py: 1, px: 4 }}>
-          <Paper sx={{ p: 1 }}>
+          <Paper sx={{ p: 1, position: "fixed", width: { lg: 300, xl: 330 } }}>
             <form onSubmit={submitHandler}>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
                 <Input

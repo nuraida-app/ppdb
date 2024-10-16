@@ -146,7 +146,14 @@ const Questionnaires = () => {
           </Paper>
         </Grid2>
         <Grid2 item size={{ xs: 12, md: 5 }}>
-          <Paper sx={{ p: 1, mx: 1 }}>
+          <Paper
+            sx={{
+              p: 1,
+              mx: 1,
+              position: "fixed",
+              width: { md: 450, lg: 500, xl: 550 },
+            }}
+          >
             <form
               style={{
                 display: "flex",

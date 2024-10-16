@@ -182,7 +182,13 @@ const Annoucement = () => {
         </Grid2>
 
         <Grid2 item size={{ xs: 12, md: 4 }} sx={{ px: 2 }}>
-          <Paper sx={{ p: 1 }}>
+          <Paper
+            sx={{
+              p: 1,
+              position: "fixed",
+              width: { md: 300, lg: 400, xl: 430 },
+            }}
+          >
             <FormControl fullWidth>
               <InputLabel>Kategori</InputLabel>
               <Select
