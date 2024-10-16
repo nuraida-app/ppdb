@@ -109,8 +109,7 @@ const Layout = ({ children }) => {
                 userPage.map((item) => {
                   const isHidden =
                     (item === "Formulir" || item === "Profil") &&
-                    (payment === null ||
-                      payment?.status === "Menunggu Konfirmasi");
+                    (payment === null || payment?.status === "Diproses");
 
                   return (
                     <Button
