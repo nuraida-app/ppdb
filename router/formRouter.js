@@ -274,8 +274,6 @@ router.post("/data-diri", isUser, role("user", "admin"), async (req, res) => {
       lingkarKepala,
     } = req.body;
 
-    const cleanNoAkta = noAkta.replace(/\D/g, "");
-
     const data = await client.query(
       `SELECT * FROM pendaftar WHERE userid = $1`,
       [userId]
@@ -294,7 +292,7 @@ router.post("/data-diri", isUser, role("user", "admin"), async (req, res) => {
           nisn,
           noKk,
           nik,
-          cleanNoAkta,
+          noAkta,
           namaLengkap,
           tempatLahir,
           tanggalLahir,
@@ -324,7 +322,7 @@ router.post("/data-diri", isUser, role("user", "admin"), async (req, res) => {
           nisn,
           noKk,
           nik,
-          cleanNoAkta,
+          noAkta,
           namaLengkap,
           tempatLahir,
           tanggalLahir,
