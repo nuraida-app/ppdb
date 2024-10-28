@@ -1024,11 +1024,11 @@ router.get(
   async (req, res) => {
     try {
       const data = await client.query(
-        `SELECT berkas FROM pendaftar WHERE userid = $1`,
+        `SELECT * FROM berkas WHERE user_id = $1`,
         [req.params.userid]
       );
 
-      const berkas = data.rows[0].berkas;
+      const berkas = data.rows;
 
       res.status(200).json(berkas);
     } catch (error) {
