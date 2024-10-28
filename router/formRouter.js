@@ -834,6 +834,8 @@ const fileCodes = {
   Rapot: "Rapot",
 };
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 // Multer storage configuration
 const imgStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -882,7 +884,6 @@ const uploadImg = multer({
     cb(null, true);
   },
 });
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Upload route
 router.post(
@@ -900,116 +901,89 @@ router.post(
   ]),
   async (req, res) => {
     try {
-      if (!req.files) {
-        return res.status(400).json({ message: "Tidak ada berkas" });
-      }
-
+      const userId = req.user.id;
       const username = req.user.name.replace(/\s+/g, "_").toLowerCase();
       const userFolder = `${username}`;
+      const files = req.files;
 
-      // Fetch existing files from the database
-      const userQuery = `SELECT berkas FROM pendaftar WHERE userid = $1`;
-      const { rows } = await client.query(userQuery, [req.user.id]);
-      let existingFiles = rows[0]?.berkas || [];
+      if (!files) {
+        return res.status(400).json({ message: "No files were uploaded." });
+      }
 
-      // Update or add new files
-      Object.keys(req.files).forEach((key) => {
-        const fileUrl = `${process.env.SERVER}/assets/berkas/${userFolder}/${req.files[key][0].filename}`;
+      const promises = Object.entries(files).map(
+        async ([fieldName, fileArray]) => {
+          const file = fileArray[0]; // Assuming maxCount is 1, so only one file per field.
+          const fileLink = `${process.env.SERVER}/assets/berkas/${userFolder}/${file.filename}`;
 
-        // Check if the file key already exists in the array
-        const fileIndex = existingFiles.findIndex((obj) => obj[key]);
+          // Check if record already exists
+          const data = await client.query(
+            `SELECT * FROM berkas WHERE user_id = $1 AND file_name = $2`,
+            [userId, fieldName]
+          );
 
-        if (fileIndex !== -1) {
-          // If file key exists, update the URL
-          existingFiles[fileIndex][key] = fileUrl;
-        } else {
-          // If file key doesn't exist, add a new object for that file
-          existingFiles.push({ [key]: fileUrl });
+          if (data.rowCount > 0) {
+            // Update if record exists
+            await client.query(
+              `UPDATE berkas SET file_link = $1 WHERE user_id = $2 AND file_name = $3`,
+              [fileLink, userId, fieldName]
+            );
+          } else {
+            // Insert if record does not exist
+            await client.query(
+              `INSERT INTO berkas(user_id, file_name, file_link) VALUES ($1, $2, $3)`,
+              [userId, fieldName, fileLink]
+            );
+          }
         }
-      });
+      );
 
-      // Update the database with the modified file array
-      const updateQuery = `
-        UPDATE pendaftar 
-        SET berkas = $1 
-        WHERE userid = $2
-      `;
-      await client.query(updateQuery, [
-        JSON.stringify(existingFiles),
-        req.user.id,
-      ]);
+      // Wait for all files to be saved
+      await Promise.all(promises);
 
-      res.status(200).json({
-        message: "Berkas berhasil disimpan",
-        fileLinks: existingFiles,
-      });
+      res.status(200).json({ message: "Files uploaded successfully" });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(500).json({ message: error.message });
     }
   }
 );
 
-router.post(
-  "/hapus-berkas",
+router.delete(
+  "/hapus-berkas/:id",
   isUser,
   role("admin", "user"),
   async (req, res) => {
     try {
-      const { userId, fileKey } = req.body;
-      const username = req.user.name.replace(/\s+/g, "_").toLowerCase();
-      const userFolder = `${username}`;
+      const id = req.params.id;
 
-      if (!fileKey) {
-        return res.status(400).json({ message: "File Key tidak tersedia" });
-      }
-
-      // Fetch the user data from the database
-      const userQuery = `
-      SELECT berkas FROM pendaftar WHERE userid = $1
-    `;
-      const { rows } = await client.query(userQuery, [userId]);
-      const userFiles = rows[0]?.berkas;
-
-      if (!userFiles) {
-        return res
-          .status(404)
-          .json({ message: "Berkas tidak ditemukan untuk anda" });
-      }
-
-      // Find the file object in the array
-      const fileObjIndex = userFiles.findIndex((obj) => obj[fileKey]);
-
-      if (fileObjIndex === -1) {
-        return res.status(404).json({ message: "Berkas tidak ditemukan" });
-      }
-
-      const fileUrl = userFiles[fileObjIndex][fileKey];
-      const fileName = path.basename(fileUrl);
-      const filePath = path.join(
-        __dirname,
-        `../assets/berkas/${userFolder}/${fileName}`
+      // Fetch file link for the specified record id
+      const result = await client.query(
+        `SELECT file_link FROM berkas WHERE id = $1`,
+        [id]
       );
 
+      if (result.rowCount === 0) {
+        return res.status(404).json({ message: "Record not found." });
+      }
+
+      // Get the file link
+      const fileLink = result.rows[0].file_link;
+
       // Delete the file from the filesystem
+      const filePath = path.join(__dirname, "..", "public", fileLink); // Adjust path based on your directory structure
       fs.unlink(filePath, (err) => {
-        if (err) {
-          return res.status(500).json({ message: "Berkas gagal dihapus" });
+        if (err && err.code !== "ENOENT") {
+          console.error(err);
+          return res
+            .status(500)
+            .json({ message: "Failed to delete the file." });
         }
-
-        // Remove only the specific file link from the array without removing other keys
-        userFiles[fileObjIndex][fileKey] = null;
-
-        // Update the database with the modified file array
-        const updateQuery = `
-        UPDATE pendaftar 
-        SET berkas = $1 
-        WHERE userid = $2
-      `;
-        client.query(updateQuery, [JSON.stringify(userFiles), userId]);
-
-        res.status(200).json({ message: "Berkas berhasil dihapus" });
       });
+
+      // Delete the record from the database
+      await client.query(`DELETE FROM berkas WHERE id = $1`, [id]);
+
+      res.status(200).json({ message: "Record and file deleted successfully" });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: error.message });
