@@ -16,32 +16,39 @@ const io = new Server(server, {
       process.env.DOMAIN_5,
     ],
     methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   },
 });
 
 io.on("connection", (socket) => {
-  socket.on("message", async (message) => {
-    const chat = await client.query(
-      `INSERT INTO pesan(
-      pengirim_id, pengirim, pengirim_role, penerima_id, penerima,
-      penerima_role, teks) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-      [
-        message.sender_id,
-        message.sender,
-        message.sender_role,
-        message.recipient_id,
-        message.recipient,
-        message.recipient_role,
-        message.chat,
-      ]
-    );
+  console.log("Client connected:", socket.id);
 
-    io.emit("message", chat);
+  socket.on("message", async (message) => {
+    try {
+      const chat = await client.query(
+        `INSERT INTO pesan(
+          pengirim_id, pengirim, pengirim_role, penerima_id, penerima,
+          penerima_role, teks) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+        [
+          message.sender_id,
+          message.sender,
+          message.sender_role,
+          message.recipient_id,
+          message.recipient,
+          message.recipient_role,
+          message.chat,
+        ]
+      );
+
+      io.emit("message", chat.rows[0]);
+    } catch (error) {
+      console.error("Database error:", error);
+    }
   });
 
   socket.on("disconnect", () => {
-    console.log("disconnect");
+    console.log("Client disconnected:", socket.id);
   });
 });
 
@@ -49,12 +56,11 @@ app.get("/", (req, res) => {
   res.redirect(process.env.DOMAIN_1);
 });
 
-server.listen(process.env.PORT, async (req, res) => {
+server.listen(process.env.PORT, async () => {
   try {
     await connect();
-
-    console.log(`port: ${process.env.PORT}`);
+    console.log(`Server running on port: ${process.env.PORT}`);
   } catch (error) {
-    console.log(`Error: ${error}`);
+    console.error(`Error connecting to database: ${error}`);
   }
 });

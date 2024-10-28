@@ -34,15 +34,15 @@ app.use(
       process.env.DOMAIN_4,
       process.env.DOMAIN_5,
     ],
-    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed methods
-    allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
 
 app.use(cookieParser());
-app.use(express.json()); // Untuk menangani JSON
-app.use(express.urlencoded({ extended: true })); // Untuk menangani form URL-encoded
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/assets", express.static(path.join(__dirname, "assets")));
 app.use("/aplikasi", appRouter);
