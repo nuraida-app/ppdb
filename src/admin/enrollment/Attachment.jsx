@@ -10,11 +10,17 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
+import { useGetFilesQuery } from "../../api/service/formApi";
 
 const Attachment = ({ data }) => {
-  const files = data?.berkas;
   const notes = data?.kesehatan;
   const families = data?.keluarga;
+
+  const { data: files } = useGetFilesQuery(data.userid, {
+    skip: !data.userid,
+  });
+
+  console.log(files);
   return (
     <>
       <Paper sx={{ p: 1 }}>
@@ -22,37 +28,25 @@ const Attachment = ({ data }) => {
         {files && (
           <Table>
             <TableBody>
-              {[
-                { label: "Kartu Keluarga", name: "KK" },
-                { label: "Akta Kelahiran", name: "Akta" },
-                { label: "KTP Ayah", name: "Ayah" },
-                { label: "KTP Ibu", name: "Ibu" },
-                { label: "Ijazah / SKL", name: "IJSKL" },
-                { label: "Foto", name: "Foto" },
-                { label: "Rapot", name: "Rapot" },
-              ].map((field) => {
-                const file = files?.find((f) => f[field.name]);
-
-                return (
-                  <TableRow key={field.name}>
-                    <TableCell sx={{ width: 200 }}> {field.label}</TableCell>
-                    <TableCell align="center" sx={{ width: 20 }}>
-                      :
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        href={file[field.name]} // Use the correct file link here
-                        target="_blank" // Open in a new tab
-                        rel="noopener noreferrer"
-                      >
-                        Link
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+              {files.map((file) => (
+                <TableRow key={file.id}>
+                  <TableCell sx={{ width: 200 }}> {file.file_name}</TableCell>
+                  <TableCell align="center" sx={{ width: 20 }}>
+                    :
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      href={file.file_link} // Use the correct file link here
+                      target="_blank" // Open in a new tab
+                      rel="noopener noreferrer"
+                    >
+                      Link
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         )}

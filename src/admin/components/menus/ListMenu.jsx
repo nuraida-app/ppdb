@@ -235,13 +235,6 @@ const ListMenu = () => {
           ))}
         </List>
       </Collapse>
-
-      <ListItemButton component={Link} to="/admin/pesan">
-        <ListItemIcon>
-          <ForumIcon color="primary" />
-        </ListItemIcon>
-        <ListItemText primary="Pesan" />
-      </ListItemButton>
     </List>
   );
 };

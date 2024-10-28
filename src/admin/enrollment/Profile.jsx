@@ -13,12 +13,16 @@ import "./styles.css";
 import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 import { useGetAppQuery } from "../../api/service/appApi";
 import Answer from "./Answer";
+import { useGetFilesQuery } from "../../api/service/formApi";
 
 const kopDefault = "https://dummyimage.com/700x120/000/fff.png";
 
 const Profile = ({ profile }) => {
   const { data } = useGetAppQuery();
-  const photo = profile?.berkas?.find((item) => item["Foto"])?.Foto;
+  const { data: files } = useGetFilesQuery(data.userid, {
+    skip: !data.userid,
+  });
+  const photo = files?.find((item) => item.file_name === "Foto");
 
   const boxRef = useRef();
   return (

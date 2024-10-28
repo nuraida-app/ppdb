@@ -17,7 +17,6 @@ import { setLogout } from "../../api/features/authSlice";
 import { useLogoutMutation } from "../../api/service/authApi";
 import Protect from "./Protect";
 import { useMyPaymentQuery } from "../../api/service/paymentApi";
-import ChatsIcon from "../chats/ChatsIcon";
 import { useGetAppQuery } from "../../api/service/appApi";
 
 const page = ["masuk", "daftar"];
@@ -209,8 +208,6 @@ const Layout = ({ children }) => {
 
       <Login open={loginPage} close={() => setLogin(false)} />
       <Signup open={signupPage} close={() => setSignup(false)} />
-
-      <ChatsIcon />
     </Fragment>
   );
 };

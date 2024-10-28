@@ -34,7 +34,6 @@ const Accepted = lazy(() => import("./admin/enrollment/Accepted"));
 const Rejected = lazy(() => import("./admin/enrollment/Rejected"));
 const Payments = lazy(() => import("./admin/repots/Payments"));
 const Statistic = lazy(() => import("./admin/repots/Statistic"));
-const ChatPage = lazy(() => import("./admin/chats/ChatPage"));
 const Detail = lazy(() => import("./admin/enrollment/Detail"));
 const Setting = lazy(() => import("./admin/setting/Setting"));
 
@@ -96,8 +95,6 @@ function App() {
           <Route path="/admin/pembayaran" element={<Payments />} />
 
           <Route path="/admin/statistik" element={<Statistic />} />
-
-          <Route path="/admin/pesan" element={<ChatPage />} />
 
           <Route path="/admin/pengaturan" element={<Setting />} />
 

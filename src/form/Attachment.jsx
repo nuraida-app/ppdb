@@ -7,7 +7,6 @@ import {
   TableBody,
   TableCell,
   TableRow,
-  Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import {
@@ -58,9 +57,10 @@ const Attachment = () => {
       // Allow only image files for Foto
       if (!imageMimeTypes.includes(selectedFile.type)) {
         toast.error("pastikan file jpg dan png");
-        setFiles({
+        setFiles((prevFiles) => ({
+          ...prevFiles,
           Foto: null,
-        });
+        }));
         return;
       }
     } else {
@@ -124,7 +124,7 @@ const Attachment = () => {
       toast.error(error.data.message);
       console.log(error);
     }
-  }, [isSuccess, error, data]);
+  }, [isSuccess, error, data, reset]);
 
   useEffect(() => {
     if (delSuccess) {
@@ -136,7 +136,7 @@ const Attachment = () => {
       toast.error(delError.data.message);
       delReset();
     }
-  }, [delSuccess, delMsg, delError]);
+  }, [delSuccess, delMsg, delError, delReset]);
 
   return (
     <Box sx={{ mt: 1 }}>
