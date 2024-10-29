@@ -118,4 +118,17 @@ router.post("/pulihkan-akun", async (req, res) => {
   }
 });
 
+// Tampilkan user
+router.get("/tampilkan-akun", isUser, role("admin"), async (req, res) => {
+  try {
+    const data = await client.query(`SELECT * FROM "user"`);
+
+    const users = data.rows;
+
+    res.status(200).json(users);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
 export default router;
