@@ -21,13 +21,19 @@ const uploadImg = multer({ storage: imgStorage });
 router.get("/semua-pembayaran", isUser, role("admin"), async (req, res) => {
   try {
     const data = await client.query(
-      `SELECT * FROM pembayaran ORDER BY createdat DESC`
+      `SELECT pembayaran.id, pembayaran.nama,
+      pembayaran.nominal, pembayaran.bukti, "user".phone,
+      pembayaran.status
+      FROM pembayaran
+      INNER JOIN "user" ON "user".id = pembayaran.user_id
+      ORDER BY pembayaran.createdat DESC`
     );
 
     const payments = data.rows;
 
     res.status(200).json(payments);
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: error.message });
   }
 });
