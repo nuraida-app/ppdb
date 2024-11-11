@@ -54,6 +54,7 @@ router.get("/:id", isUser, role("user"), async (req, res) => {
 
     res.status(200).json(payment);
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: error.message });
   }
 });

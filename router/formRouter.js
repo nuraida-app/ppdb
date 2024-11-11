@@ -128,6 +128,7 @@ router.get("/tampilkan", isUser, role("admin"), async (req, res) => {
 
     res.status(200).json(perndaftar);
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: error.message });
   }
 });
@@ -196,6 +197,7 @@ router.put("/diterima/:userid", isUser, role("admin"), async (req, res) => {
       return res.status(404).json({ message: "Data tidak ditemukan" });
     }
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: error.message });
   }
 });
@@ -221,6 +223,7 @@ router.put("/ditolak/:userid", isUser, role("admin"), async (req, res) => {
       return res.status(404).json({ message: "Data tidak ditemukan" });
     }
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: error.message });
   }
 });
@@ -246,6 +249,7 @@ router.put("/menunggu/:userid", isUser, role("admin"), async (req, res) => {
       return res.status(404).json({ message: "Data tidak ditemukan" });
     }
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: error.message });
   }
 });
@@ -372,6 +376,7 @@ router.get(
 
       res.status(200).json(pendaftar);
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ message: error.message });
     }
   }
@@ -435,6 +440,7 @@ router.post("/alamat", isUser, role("admin", "user"), async (req, res) => {
       return res.status(404).json({ message: "Data tidak ditemukan" });
     }
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: error.message });
   }
 });
@@ -459,6 +465,7 @@ router.get(
 
       res.status(200).json(alamat);
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ message: error.message });
     }
   }
@@ -553,6 +560,7 @@ router.get(
 
       res.status(200).json(orangtua);
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ message: error.message });
     }
   }
@@ -610,7 +618,7 @@ router.post(
         return res.status(404).json({ message: "Data tidak ditemukan" });
       }
     } catch (error) {
-      console.log(error.message);
+      console.log(error);
       return res.status(500).json({ message: error.message });
     }
   }
@@ -635,6 +643,7 @@ router.get(
 
       res.status(200).json(sekolah);
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ message: error.message });
     }
   }
@@ -674,6 +683,7 @@ router.post("/kesehatan", isUser, role("admin", "user"), async (req, res) => {
       return res.status(404).json({ message: "Data tidak ditemukan" });
     }
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: error.message });
   }
 });
@@ -693,6 +703,7 @@ router.get(
 
       res.status(200).json(kesehatan);
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ message: error.message });
     }
   }
@@ -726,6 +737,7 @@ router.delete(
         return res.status(404).json({ message: "Data tidak ditemukan" });
       }
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ message: error.message });
     }
   }
@@ -765,6 +777,7 @@ router.post("/keluarga", isUser, role("admin", "user"), async (req, res) => {
       return res.status(404).json({ message: "Data tidak ditemukan" });
     }
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: error.message });
   }
 });
@@ -784,6 +797,7 @@ router.get(
 
       res.status(200).json(keluarga);
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ message: error.message });
     }
   }
@@ -817,6 +831,7 @@ router.delete(
         return res.status(404).json({ message: "Data tidak ditemukan" });
       }
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ message: error.message });
     }
   }
@@ -1006,6 +1021,7 @@ router.get(
 
       res.status(200).json(berkas);
     } catch (error) {
+      console.log(error);
       return res(500).json({ message: error.message });
     }
   }
