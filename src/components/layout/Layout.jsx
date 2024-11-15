@@ -128,6 +128,22 @@ const Layout = ({ children }) => {
                   );
                 })}
 
+              {/* {user?.name === "Mujaddid Al Magribi" &&
+                userPage.map((item) => (
+                  <Button
+                    key={item}
+                    sx={{
+                      display: { xs: "none", md: "block" },
+                      my: 2,
+                      color: "white",
+                      textTransform: "none",
+                    }}
+                    onClick={() => toPage(item)}
+                  >
+                    {item}
+                  </Button>
+                ))} */}
+
               {user?.role === "admin" && (
                 <Button
                   sx={{

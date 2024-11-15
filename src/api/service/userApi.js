@@ -8,6 +8,10 @@ export const userApi = createApi({
   }),
   tagTypes: ["users", "user", "admin"],
   endpoints: (builder) => ({
+    getAccounts: builder.query({
+      query: () => `/tampilkan-akun`,
+      providesTags: ["users"],
+    }),
     getUsers: builder.query({
       query: () => `/tampilkan`,
       providesTags: ["users"],
@@ -49,6 +53,7 @@ export const userApi = createApi({
 });
 
 export const {
+  useGetAccountsQuery,
   useGetUsersQuery,
   useGetAdminQuery,
   useUpdateAdminMutation,

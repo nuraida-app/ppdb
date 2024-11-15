@@ -11,7 +11,6 @@ import { formApi } from "./service/formApi";
 import { areaApi } from "./service/areaApi";
 import { statisticApi } from "./service/staticticApi";
 import { userApi } from "./service/userApi";
-import { chatApi } from "./service/chatApi";
 import { appApi } from "./service/appApi";
 import { scheduleApi } from "./service/scheduleApi";
 import { quizApi } from "./service/quizApi";
@@ -31,7 +30,6 @@ const store = configureStore({
     [formApi.reducerPath]: formApi.reducer,
     [areaApi.reducerPath]: areaApi.reducer,
     [statisticApi.reducerPath]: statisticApi.reducer,
-    [chatApi.reducerPath]: chatApi.reducer,
     [scheduleApi.reducerPath]: scheduleApi.reducer,
     [quizApi.reducerPath]: quizApi.reducer,
   },
@@ -50,7 +48,6 @@ const store = configureStore({
       formApi.middleware,
       areaApi.middleware,
       statisticApi.middleware,
-      chatApi.middleware,
       scheduleApi.middleware,
       quizApi.middleware,
     ]),

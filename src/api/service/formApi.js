@@ -148,10 +148,9 @@ export const formApi = createApi({
       invalidatesTags: ["files", "form"],
     }),
     deleteFile: builder.mutation({
-      query: (body) => ({
-        url: `/hapus-berkas`,
-        method: "POST",
-        body,
+      query: (id) => ({
+        url: `/hapus-berkas/${id}`,
+        method: "DELETE",
       }),
       invalidatesTags: ["files", "form"],
     }),

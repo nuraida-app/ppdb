@@ -73,8 +73,10 @@ const Rejected = () => {
 
   const status = registars?.filter((r) => r.status_pendaftaran === "Ditolak");
 
-  const filteredData = status?.filter((item) =>
-    item.kode_pendaftaran.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredData = status?.filter(
+    (item) => (item) =>
+      item.nama !== null &&
+      item.nama.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const waitHanlder = () => {

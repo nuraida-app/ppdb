@@ -20,6 +20,7 @@ import { useSelector } from "react-redux";
 const Attachment = () => {
   const { user } = useSelector((state) => state.user);
   const { data: userFiles } = useGetFilesQuery(user?.id, { skip: !user?.id });
+
   const [uploadFiles, { data, isSuccess, isLoading, error, reset }] =
     useUploadFilesMutation();
   const [
@@ -43,55 +44,32 @@ const Attachment = () => {
     Rapot: null,
   });
 
-  // Allowed file types
   const pdfMimeType = "application/pdf";
   const imageMimeTypes = ["image/jpeg", "image/png", "image/gif"];
 
-  // Handle file changes with type validation
   const handleFileChange = (e) => {
     const { name, files } = e.target;
     const selectedFile = files[0];
 
-    // Validate file type
     if (name === "Foto") {
-      // Allow only image files for Foto
       if (!imageMimeTypes.includes(selectedFile.type)) {
-        toast.error("pastikan file jpg dan png");
-        setFiles((prevFiles) => ({
-          ...prevFiles,
-          Foto: null,
-        }));
+        toast.error("Pastikan file jpg dan png");
+        setFiles((prevFiles) => ({ ...prevFiles, Foto: null }));
         return;
       }
-    } else {
-      // Allow only PDF for all other fields
-      if (selectedFile.type !== pdfMimeType) {
-        toast.error("Pastikan file PDF");
-        setFiles({
-          KK: null,
-          Akta: null,
-          Ayah: null,
-          Ibu: null,
-          IJSKL: null,
-          Foto: null,
-          Rapot: null,
-        });
-        return;
-      }
+    } else if (selectedFile.type !== pdfMimeType) {
+      toast.error("Pastikan file PDF");
+      setFiles((prevFiles) => ({ ...prevFiles, [name]: null }));
+      return;
     }
 
-    setFiles((prevFiles) => ({
-      ...prevFiles,
-      [name]: selectedFile, // Set the selected file for each input
-    }));
+    setFiles((prevFiles) => ({ ...prevFiles, [name]: selectedFile }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const formData = new FormData();
-
-    // Append each file to formData if it exists
     Object.keys(files).forEach((key) => {
       if (files[key]) {
         formData.append(key, files[key]);
@@ -101,8 +79,8 @@ const Attachment = () => {
     uploadFiles(formData);
   };
 
-  const deleteHandler = (fileKey) => {
-    deleteFile({ userId: user?.id, fileKey });
+  const deleteHandler = (id) => {
+    deleteFile(id);
   };
 
   useEffect(() => {
@@ -152,7 +130,7 @@ const Attachment = () => {
               { label: "Foto", name: "Foto" },
               { label: "Rapot", name: "Rapot" },
             ].map((field) => {
-              const file = userFiles?.find((f) => f[field.name]);
+              const file = userFiles?.find((f) => f.file_name === field.name);
 
               return (
                 <TableRow key={field.name}>
@@ -167,7 +145,7 @@ const Attachment = () => {
                           variant="contained"
                           color="error"
                           sx={{ mr: 2 }}
-                          onClick={() => deleteHandler(field.name)}
+                          onClick={() => deleteHandler(file?.id)}
                         >
                           {delLoading ? (
                             <CircularProgress size={24} />
@@ -178,8 +156,8 @@ const Attachment = () => {
                         <Button
                           variant="contained"
                           color="primary"
-                          href={file[field.name]} // Use the correct file link here
-                          target="_blank" // Open in a new tab
+                          href={file.file_link}
+                          target="_blank"
                           rel="noopener noreferrer"
                         >
                           Link

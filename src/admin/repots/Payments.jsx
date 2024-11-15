@@ -20,6 +20,7 @@ import {
   Input,
 } from "@mui/material";
 import { toast } from "react-toastify";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 
 const Payments = () => {
   const { data: payments } = useGetPaymentsQuery();
@@ -93,13 +94,19 @@ const Payments = () => {
           <Table>
             <TableHead>
               <TableRow>
-                {["No", "Nama", "Nominal", "Berkas", "Status", "Aksi"].map(
-                  (item) => (
-                    <TableCell key={item} align="center">
-                      {item}
-                    </TableCell>
-                  )
-                )}
+                {[
+                  "No",
+                  "Nama",
+                  "Whatsapp",
+                  "Nominal",
+                  "Status",
+                  "Berkas",
+                  "Aksi",
+                ].map((item) => (
+                  <TableCell key={item} align="center">
+                    {item}
+                  </TableCell>
+                ))}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -109,9 +116,24 @@ const Payments = () => {
                     {page * rowsPerPage + index + 1}
                   </TableCell>
                   <TableCell>{item.nama}</TableCell>
+                  <TableCell align="center">
+                    <Button
+                      startIcon={<WhatsAppIcon />}
+                      variant="contained"
+                      color="success"
+                      onClick={() =>
+                        window.open(`https://wa.me/${item.phone}`, "_blank")
+                      }
+                    >
+                      {item.phone}
+                    </Button>
+                  </TableCell>
                   <TableCell align="center">{`Rp ${parseFloat(
                     item.nominal
                   ).toLocaleString("id-ID")}`}</TableCell>
+                  <TableCell align="center">
+                    <Typography>{item.status}</Typography>
+                  </TableCell>
                   <TableCell align="center">
                     <Button
                       variant="contained"
@@ -122,9 +144,6 @@ const Payments = () => {
                     >
                       Link
                     </Button>
-                  </TableCell>
-                  <TableCell align="center">
-                    <Typography>{item.status}</Typography>
                   </TableCell>
                   <TableCell align="center">
                     <Button

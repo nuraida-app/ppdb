@@ -20,7 +20,6 @@ const Attachment = ({ data }) => {
     skip: !data.userid,
   });
 
-  console.log(files);
   return (
     <>
       <Paper sx={{ p: 1 }}>

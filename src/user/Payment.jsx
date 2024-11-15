@@ -76,6 +76,11 @@ const Payment = () => {
   };
 
   const submitHandler = () => {
+    if (!media || !price || !file) {
+      alert("Pastikan semua data terisi");
+      return;
+    }
+
     const data = new FormData();
 
     data.append("name", user.name);
@@ -305,7 +310,7 @@ const Payment = () => {
               <TextField
                 label="Nominal Pembayaran"
                 size="small"
-                placeholder="9000000"
+                placeholder="Masukan nominal tanpa Rp dan ."
                 required
                 slotProps={{ inputLabel: { shrink: true } }}
                 value={price}

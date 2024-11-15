@@ -74,8 +74,12 @@ const Registars = () => {
 
   const status = registars?.filter((r) => r.status_pendaftaran === "Diproses");
 
-  const filteredData = status?.filter((item) =>
-    item.kode_pendaftaran.toLowerCase().includes(searchTerm.toLowerCase())
+  console.log(status);
+
+  const filteredData = status?.filter(
+    (item) =>
+      item.nama !== null &&
+      item.nama.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const accpetHandler = () => {
@@ -139,7 +143,7 @@ const Registars = () => {
         {/* Search Input */}
         <Input
           type="text"
-          placeholder="Kode Pendaftaran"
+          placeholder="Nama"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           sx={{ my: 1 }}

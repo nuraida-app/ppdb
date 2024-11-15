@@ -36,6 +36,7 @@ const Payments = lazy(() => import("./admin/repots/Payments"));
 const Statistic = lazy(() => import("./admin/repots/Statistic"));
 const Detail = lazy(() => import("./admin/enrollment/Detail"));
 const Setting = lazy(() => import("./admin/setting/Setting"));
+const AdminUser = lazy(() => import("./admin/user/AdminUser"));
 
 function App() {
   const dispatch = useDispatch();
@@ -97,6 +98,8 @@ function App() {
           <Route path="/admin/statistik" element={<Statistic />} />
 
           <Route path="/admin/pengaturan" element={<Setting />} />
+
+          <Route path="/admin/pengguna" element={<AdminUser />} />
 
           {/* Pendaftar */}
 

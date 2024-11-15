@@ -19,10 +19,11 @@ const kopDefault = "https://dummyimage.com/700x120/000/fff.png";
 
 const Profile = ({ profile }) => {
   const { data } = useGetAppQuery();
-  const { data: files } = useGetFilesQuery(data.userid, {
-    skip: !data.userid,
+
+  const { data: files } = useGetFilesQuery(profile.userid, {
+    skip: !profile.userid,
   });
-  const photo = files?.find((item) => item.file_name === "Foto");
+  const photo = files?.find((item) => item.file_name === "Foto")?.file_link;
 
   const boxRef = useRef();
   return (

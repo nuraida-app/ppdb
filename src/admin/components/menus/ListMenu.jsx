@@ -23,6 +23,7 @@ import DonutLargeOutlinedIcon from "@mui/icons-material/DonutLargeOutlined";
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import EventNoteOutlinedIcon from "@mui/icons-material/EventNoteOutlined";
 import ForumIcon from "@mui/icons-material/Forum";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
 import { Link } from "react-router-dom";
@@ -70,7 +71,7 @@ const data1 = [
 
 const data2 = [
   {
-    label: "Calon Pelajar",
+    label: "Diproses",
     link: "/admin/pelajar",
     icon: <PeopleOutlinedIcon color="primary" />,
   },
@@ -104,7 +105,7 @@ const ListMenu = () => {
   const { data: payment, refetch: paymentRefetch } = useGetPaymentsQuery();
 
   const count = data?.filter(
-    (d) => d.status_pendaftaran === "Diproses"
+    (d) => d.kode_pendaftaran != null && d.status_pendaftaran === "Diproses"
   )?.length;
   const newPayment = payment?.filter((p) => p.status === "Diproses")?.length;
 
@@ -176,7 +177,7 @@ const ListMenu = () => {
             <FolderSharedOutlinedIcon color="primary" />
           </Badge>
         </ListItemIcon>
-        <ListItemText primary="Pendaftar" />
+        <ListItemText primary="Calon Pelajar" />
         {open2 ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
 
@@ -191,7 +192,7 @@ const ListMenu = () => {
             >
               <ListItemIcon>
                 <Badge
-                  badgeContent={item.label === "Calon Pelajar" ? count : 0}
+                  badgeContent={item.label === "Diproses" ? count : 0}
                   color="error"
                 >
                   {item.icon}
@@ -235,6 +236,12 @@ const ListMenu = () => {
           ))}
         </List>
       </Collapse>
+      <ListItemButton component={Link} to="/admin/pengguna">
+        <ListItemIcon>
+          <AccountCircleOutlinedIcon color="primary" />
+        </ListItemIcon>
+        <ListItemText primary="Akun" />
+      </ListItemButton>
     </List>
   );
 };
