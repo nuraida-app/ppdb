@@ -22,7 +22,7 @@ router.get("/semua-pembayaran", isUser, role("admin"), async (req, res) => {
   try {
     const data = await client.query(
       `SELECT pembayaran.id, pembayaran.nama,
-      pembayaran.nominal, pembayaran.bukti, "user".phone,
+      pembayaran.nominal, pembayaran.bukti, "user".phone, pembayaran.user_id,
       pembayaran.status
       FROM pembayaran
       INNER JOIN "user" ON "user".id = pembayaran.user_id
