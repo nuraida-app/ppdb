@@ -1,0 +1,14 @@
+p {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+td {
+  align-content: center;
+  text-align: center;
+}
+
+th {
+  align-content: center;
+  text-align: center !important;
+}

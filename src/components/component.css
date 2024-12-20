@@ -1,0 +1,50 @@
+/* admin menu */
+.admin-menu {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  border-radius: 10px;
+  padding-left: 1rem;
+  position: relative;
+}
+
+.admin-menu::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background-color: white;
+  z-index: -1;
+  transition: all 0.3s ease-in-out;
+}
+
+.admin-menu:hover::before {
+  width: 100%;
+}
+
+#admin-list {
+  width: 90%;
+  height: 100%;
+  transition: all 0.3s;
+  color: blueviolet;
+  font-size: 14px;
+}
+
+#admin-list:hover {
+  transform: translate(20px);
+}
+
+/* Alert */
+/* Tambahkan ini di file CSS Anda */
+.alert-slide-in {
+  transform: translateX(200px); /* Memulai dari luar layar */
+  opacity: 0; /* Mulai dari transparan */
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.alert-slide-in.active {
+  transform: translateX(0); /* Berhenti di posisi akhir */
+  opacity: 1; /* Tampak penuh */
+}
