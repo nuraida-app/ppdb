@@ -20,18 +20,66 @@ const uploadImg = multer({ storage: imgStorage });
 
 router.get("/semua-pembayaran", authorize("admin"), async (req, res) => {
   try {
-    const data = await client.query(
-      `SELECT pembayaran.id, pembayaran.nama,
-      pembayaran.nominal, pembayaran.berkas, user_info.tlp, pembayaran.user_id,
-      pembayaran.ket
-      FROM pembayaran
-      INNER JOIN user_info ON user_info.id = pembayaran.user_id
-      ORDER BY pembayaran.tgl_bayar DESC`
-    );
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const search = req.query.search;
 
-    const payments = data.rows;
+    const offset = (page - 1) * limit;
 
-    res.status(200).json(payments);
+    let payments = [];
+    let totalPages;
+
+    if (search) {
+      const count = await client.query(
+        `SELECT COUNT(*) FROM pembayaran
+    INNER JOIN user_info ON user_info.id = pembayaran.user_id
+    WHERE LOWER(pembayaran.nama) LIKE LOWER($1)
+    OR LOWER(user_info.nama) LIKE LOWER($1)`,
+        ["%" + search + "%"]
+      );
+
+      const total = parseInt(count.rows[0].count, 10);
+
+      totalPages = Math.ceil(total / limit);
+
+      const data = await client.query(
+        `SELECT pembayaran.id, pembayaran.nama,
+    pembayaran.nominal, pembayaran.berkas, user_info.tlp, pembayaran.user_id,
+    pembayaran.ket
+    FROM pembayaran
+    INNER JOIN user_info ON user_info.id = pembayaran.user_id
+    WHERE LOWER(pembayaran.nama) LIKE LOWER($1)
+    OR LOWER(user_info.nama) LIKE LOWER($1)
+    ORDER BY pembayaran.tgl_bayar DESC
+    LIMIT $2 OFFSET $3`,
+        ["%" + search + "%", limit, offset]
+      );
+
+      payments = data.rows;
+
+      res.status(200).json({ payments, totalPages });
+    } else {
+      const count = await client.query(`SELECT COUNT(*) FROM pembayaran`);
+
+      const total = parseInt(count.rows[0].count, 10);
+
+      totalPages = Math.ceil(total / limit);
+
+      const data = await client.query(
+        `SELECT pembayaran.id, pembayaran.nama,
+    pembayaran.nominal, pembayaran.berkas, user_info.tlp, pembayaran.user_id,
+    pembayaran.ket
+    FROM pembayaran
+    INNER JOIN user_info ON user_info.id = pembayaran.user_id
+    ORDER BY pembayaran.tgl_bayar DESC
+    LIMIT $1 OFFSET $2`,
+        [limit, offset]
+      );
+
+      payments = data.rows;
+
+      res.status(200).json({ payments, totalPages });
+    }
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: error.message });

@@ -23,7 +23,7 @@ import RouterKuis from "./router/kuisioner.js";
 app.use(
   cors({
     origin: [
-      process.env.DOMAIN_1,
+      process.env.DOMAIN,
       process.env.DOMAIN_2,
       process.env.DOMAIN_3,
       process.env.DOMAIN_4,
