@@ -14,7 +14,7 @@ const TableContainer = ({
 
   const handleChange = (e) => {
     const newValue = e.target.value;
-    console.log(newValue);
+
     setValue(newValue);
     if (onValue) {
       onValue(newValue);

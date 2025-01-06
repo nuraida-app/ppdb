@@ -9,7 +9,10 @@ export const ApiPembayaran = createApi({
   tagTypes: ["myPayment", "payments"],
   endpoints: (builder) => ({
     getPayments: builder.query({
-      query: () => "/semua-pembayaran",
+      query: ({ page, limit, search }) => ({
+        url: "/semua-pembayaran",
+        params: { page, limit, search },
+      }),
       providesTags: ["payments"],
     }),
     getData: builder.query({

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 import "./editor.css";
 
 class Editor extends Component {
@@ -27,7 +27,7 @@ class Editor extends Component {
     const { placeholder } = this.props;
 
     return (
-      <div className="d-flex" style={{ height: 400 }}>
+      <div className="d-flex bg-white" style={{ height: 400 }}>
         <ReactQuill
           ref={(el) => {
             this.reactQuillRef = el;
@@ -38,7 +38,7 @@ class Editor extends Component {
           modules={Editor.modules()}
           formats={Editor.formats}
           placeholder={placeholder}
-          className="react-quill"
+          className="react-quill rounded shadow"
         />
       </div>
     );
@@ -76,7 +76,6 @@ Editor.formats = [
   "strike",
   "blockquote",
   "list",
-  "bullet",
   "indent",
   "link",
   "image",

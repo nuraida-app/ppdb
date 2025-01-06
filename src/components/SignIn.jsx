@@ -7,6 +7,7 @@ import {
 } from "../api/services/ApiAuthorize";
 import { useDispatch, useSelector } from "react-redux";
 import { setLogin } from "../api/features/Authorize";
+import { toast } from "react-toastify";
 
 const SignIn = () => {
   const dispatch = useDispatch();
@@ -48,7 +49,7 @@ const SignIn = () => {
     }
 
     if (error) {
-      console.error(error?.data?.message || "Login failed");
+      toast.error(error.data.message);
     }
   }, [isSuccess, error, data]);
 
