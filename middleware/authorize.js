@@ -30,7 +30,7 @@ export const authorize = (...allowedRoles) => {
       req.user = data.rows[0];
 
       // Memeriksa apakah role pengguna cocok
-      if (allowedRoles.length === 0 && !allowedRoles.includes(req.user.role)) {
+      if (allowedRoles.length > 0 && !allowedRoles.includes(req.user.peran)) {
         return res
           .status(403)
           .json({ message: "Akses ditolak, tidak ada otoritas" });

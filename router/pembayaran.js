@@ -156,9 +156,8 @@ router.put(
   authorize("admin"),
   async (req, res) => {
     try {
-      const confirm = "Terkonfirmasi";
-      const year = new Date().getFullYear();
-      const status = true;
+      const isPaid = true;
+      const status = "Diproses";
 
       const data = await client.query(
         `SELECT * FROM pembayaran WHERE user_id = $1`,
@@ -169,31 +168,20 @@ router.put(
         return res.status(404).json({ message: "Data tidak ditemukan" });
       }
 
-      if (data.rows[0].status === confirm) {
-        return res
-          .status(500)
-          .json({ message: "Pembayaran sudah terkonfirmasi" });
-      }
-
       // Konfirmasi pembayaran
       await client.query(`UPDATE pembayaran SET ket = $1 WHERE user_id = $2`, [
-        confirm,
+        isPaid,
         req.params.userId,
       ]);
 
       // Mendapatkan jumlah pendaftar yang sudah terkonfirmasi
 
-      const { rows } = await client.query(
-        `SELECT COUNT(*) FROM pendaftar WHERE kode_pendaftaran IS NOT NULL`
-      );
+      const { rows } = await client.query(`SELECT COUNT(*) FROM pendaftar`);
 
       const totalConfirmed = parseInt(rows[0].count, 10) + 1;
 
       // Membuat kode pendaftar dinamis
-      const kodeDaftar = `PPDB-${year}${String(totalConfirmed).padStart(
-        4,
-        "0"
-      )}`;
+      const kodeDaftar = `PPDB-${String(totalConfirmed).padStart(4, "0")}`;
 
       // Update kode_pembayaran untuk pendaftar
       await client.query(

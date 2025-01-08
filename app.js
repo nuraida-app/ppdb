@@ -17,8 +17,9 @@ import RouterSekolah from "./router/sekolah.js";
 import RouterJenjang from "./router/jenjang.js";
 import RouterInfo from "./router/info.js";
 import RouterJadwal from "./router/jadwal.js";
-import RouterStatistik from "./router/statistik.js";
 import RouterKuis from "./router/kuisioner.js";
+import RouterFormulir from "./router/form.js";
+import RouterStatistik from "./router/statistik.js";
 
 app.use(
   cors({
@@ -48,6 +49,7 @@ app.use("/jenjang", RouterJenjang);
 app.use("/info", RouterInfo);
 app.use("/jadwal", RouterJadwal);
 app.use("/kuis", RouterKuis);
+app.use("/formulir", RouterFormulir);
 app.use("/statistik", RouterStatistik);
 
 export default app;

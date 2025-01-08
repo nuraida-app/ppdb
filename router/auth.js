@@ -46,6 +46,41 @@ router.post("/sign-in", async (req, res) => {
   }
 });
 
+router.post("/sign-up", async (req, res) => {
+  try {
+    const { name, email, password, phone } = req.body;
+
+    const data = await client.query(
+      `SELECT * FROM user_info WHERE email = $1`,
+      [email]
+    );
+
+    if (data.rowCount > 0) {
+      return res.status(500).json({ message: "Email sudah digunakan" });
+    }
+
+    // Hash password
+    const hash = await bcrypt.hash(password, 10);
+
+    const role = "user";
+    const user = await client.query(
+      `INSERT INTO user_info (nama, email, password, tlp, peran)
+       VALUES($1, $2, $3, $4, $5) RETURNING *`,
+      [name, email, hash, phone, role]
+    );
+
+    const token = generateToken(user.rows[0]);
+
+    // Menyimpan token ke cookie
+    return res
+      .status(200)
+      .cookie("token", token, { httpOnly: true, maxAge: 43200000 }) // 12 jam
+      .json({ message: "Pendaftaran Berhasil" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
 router.get("/load", authorize("user", "admin"), async (req, res) => {
   try {
     // Extract token from cookies
