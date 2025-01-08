@@ -31,6 +31,7 @@ const Users = () => {
             <thead>
               <tr>
                 <th scope="col">#</th>
+                <th scope="col">Kode User</th>
                 <th scope="col">Nama</th>
                 <th scope="col">Email</th>
                 <th scope="col">WhatsApp</th>
@@ -40,8 +41,9 @@ const Users = () => {
               {users.map((user, index) => (
                 <tr key={user.id}>
                   <th scope="row">{(page - 1) * limit + index + 1}</th>
-                  <td style={{ textAlign: "start" }}>{user.nama}</td>
-                  <td style={{ textAlign: "start" }}>{user.email}</td>
+                  <td className="text-center">{user.id}</td>
+                  <td className="text-start">{user.nama}</td>
+                  <td className="text-start">{user.email}</td>
                   <td>
                     <button
                       className="btn btn-success"

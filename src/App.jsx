@@ -1,5 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 import React, { lazy, Suspense, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -28,7 +29,9 @@ const Kuis = lazy(() => import("./admin/kuis/Kuis"));
 const Process = lazy(() => import("./admin/calon/Proses"));
 const Terima = lazy(() => import("./admin/calon/Terima"));
 const Tolak = lazy(() => import("./admin/calon/Tolak"));
+const Calon = lazy(() => import("./admin/calon/Calon"));
 const Pembayaran = lazy(() => import("./admin/bayar/Pembayaran"));
+const Statistik = lazy(() => import("./admin/statistik/Statistik"));
 
 //User
 const UserDashboard = lazy(() => import("./user/UserDashboard"));
@@ -67,50 +70,54 @@ function App() {
 
           <Route exact path="/reset" element={<Reset />} />
 
-          <Route exact path="/admin/beranda" element={<Dashboard />} />
+          <Route exact path="/admin-beranda" element={<Dashboard />} />
 
-          <Route exact path="/admin/users" element={<Users />} />
+          <Route exact path="/admin-users" element={<Users />} />
 
-          <Route exact path="/admin/tapel" element={<Tapel />} />
+          <Route exact path="/admin-tapel" element={<Tapel />} />
 
-          <Route exact path="/admin/tingkat" element={<Tingkat />} />
+          <Route exact path="/admin-tingkat" element={<Tingkat />} />
 
-          <Route exact path="/admin/sekolah" element={<Sekolah />} />
+          <Route exact path="/admin-sekolah" element={<Sekolah />} />
 
-          <Route exact path="/admin/info" element={<Info />} />
+          <Route exact path="/admin-info" element={<Info />} />
 
-          <Route exact path="/admin/jadwal" element={<Jadwal />} />
+          <Route exact path="/admin-jadwal" element={<Jadwal />} />
 
-          <Route exact path="/admin/kuisioner" element={<Kuis />} />
+          <Route exact path="/admin-kuisioner" element={<Kuis />} />
 
-          <Route exact path="/admin/pendaftar" element={<Process />} />
+          <Route exact path="/admin-pendaftar" element={<Process />} />
 
-          <Route exact path="/admin/diterima" element={<Terima />} />
+          <Route exact path="/admin-diterima" element={<Terima />} />
 
-          <Route exact path="/admin/ditolak" element={<Tolak />} />
+          <Route exact path="/admin-ditolak" element={<Tolak />} />
 
-          <Route exact path="/admin/pembayaran" element={<Pembayaran />} />
+          <Route exact path="/admin-pendaftar/:userid" element={<Calon />} />
+
+          <Route exact path="/admin-pembayaran" element={<Pembayaran />} />
+
+          <Route exact path="/admin-pusat-data" element={<Statistik />} />
 
           {/* Route User */}
-          <Route exact path="/user/beranda" element={<UserDashboard />} />
+          <Route exact path="/user-beranda" element={<UserDashboard />} />
 
-          <Route exact path="/user/pembayaran" element={<UserPembayaran />} />
+          <Route exact path="/user-pembayaran" element={<UserPembayaran />} />
 
-          <Route exact path="/user/data-diri" element={<Biodata />} />
+          <Route exact path="/user-data-diri" element={<Biodata />} />
 
-          <Route exact path="/user/orang-tua" element={<Ortu />} />
+          <Route exact path="/user-orang-tua" element={<Ortu />} />
 
-          <Route exact path="/user/keluarga" element={<Keluarga />} />
+          <Route exact path="/user-keluarga" element={<Keluarga />} />
 
-          <Route exact path="/user/alamat" element={<Alamat />} />
+          <Route exact path="/user-alamat" element={<Alamat />} />
 
-          <Route exact path="/user/sekolah" element={<Fsekolah />} />
+          <Route exact path="/user-sekolah" element={<Fsekolah />} />
 
-          <Route exact path="/user/kesehatan" element={<Kesehatan />} />
+          <Route exact path="/user/-kesehatan" element={<Kesehatan />} />
 
-          <Route exact path="/user/berkas" element={<Berkas />} />
+          <Route exact path="/user-berkas" element={<Berkas />} />
 
-          <Route exact path="/user/kuisioner" element={<Kuisioner />} />
+          <Route exact path="/user-kuisioner" element={<Kuisioner />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

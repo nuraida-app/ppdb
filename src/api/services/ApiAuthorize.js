@@ -12,7 +12,7 @@ export const ApiAuthorize = createApi({
     }),
     register: builder.mutation({
       query: (body) => ({
-        url: "/daftar",
+        url: "/sign-up",
         method: "POST",
         body,
       }),

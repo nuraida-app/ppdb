@@ -2,29 +2,23 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 
-const Protect = ({ role }) => {
+const Protected = ({ role }) => {
   const navigate = useNavigate();
   const { user, signIn } = useSelector((state) => state.user);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (user?.peran !== role || !user) {
+      if (
+        !user ||
+        (user?.peran !== "admin" && user?.peran !== "user") ||
+        !signIn
+      ) {
         navigate("/");
       }
     }, 300);
 
     return () => clearTimeout(timeout);
-  }, [user, navigate]);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (!signIn) {
-        navigate("/");
-      }
-    }, 2000);
-
-    return () => clearTimeout(timeout);
-  }, [signIn]);
+  }, [user, signIn, navigate]);
 };
 
-export default Protect;
+export default Protected;

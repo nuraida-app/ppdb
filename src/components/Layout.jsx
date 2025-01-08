@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import AdminMenu from "./AdminMenu";
 import UserMenu from "./UserMenu";
 import { useNavigate, useParams } from "react-router-dom";
@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLogoutMutation } from "../api/services/ApiAuthorize";
 import { setLogout } from "../api/features/Authorize";
 import TabName from "./TabName";
+import Protected from "./Protected";
 
 const Layout = ({ children, title }) => {
   const dispatch = useDispatch();
@@ -66,7 +67,7 @@ const Layout = ({ children, title }) => {
           <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 ">
             <div
               style={{ minHeight: "88vh", marginTop: 10 }}
-              className="d-flex flex-column shadow py-2 rounded "
+              className="container d-flex flex-column shadow py-2 rounded "
             >
               {children}
             </div>

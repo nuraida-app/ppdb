@@ -1,8 +1,11 @@
 import React from "react";
 import Layout from "../../components/Layout";
+import { useSelector } from "react-redux";
+import { useMyPaymentQuery } from "../../api/services/ApiPembayaran";
+import NotAllowed from "../NotAllowed";
 
 const labels = [
-  { label: "kartu keluarga", name: "kk" },
+  { label: "Kartu keluarga", name: "kk" },
   { label: "Akta Kelahiran", name: "akta" },
   { label: "KTP Ayah", name: "ayah" },
   { label: "KTP Ibu", name: "ibu" },
@@ -11,6 +14,9 @@ const labels = [
 ];
 
 const Berkas = () => {
+  const { user } = useSelector((state) => state.user);
+  const { data } = useMyPaymentQuery(user?.id, { skip: !user?.id });
+
   return (
     <Layout>
       <div className="container d-flex flex-column py-2 border-bottom mb-3">
@@ -22,7 +28,7 @@ const Berkas = () => {
         </p>
       </div>
 
-      <div className="container d-flex gap-2 my-3">
+      <div className="container d-flex flex-wrap gap-2 my-3">
         {labels.map((item, index) => (
           <button key={index} className={`btn btn-danger`}>
             {item.label}
@@ -30,21 +36,25 @@ const Berkas = () => {
         ))}
       </div>
 
-      <div className="container d-flex flex-column gap-2">
-        {labels.map((item, index) => (
-          <div key={index}>
-            <label htmlFor="kk" className="form-label">
-              {item.label}
-            </label>
-            <input
-              type="file"
-              className="form-control"
-              id={item.name}
-              name={item.name}
-            />
-          </div>
-        ))}
-      </div>
+      {data?.key ? (
+        <div className="container d-flex flex-column gap-2">
+          {labels.map((item, index) => (
+            <div key={index}>
+              <label htmlFor="kk" className="form-label">
+                {item.label}
+              </label>
+              <input
+                type="file"
+                className="form-control"
+                id={item.name}
+                name={item.name}
+              />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <NotAllowed />
+      )}
     </Layout>
   );
 };

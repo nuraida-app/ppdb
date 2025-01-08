@@ -7,30 +7,34 @@ import * as Fa6 from "react-icons/fa6";
 import * as Hi from "react-icons/hi";
 import * as Md from "react-icons/md";
 import * as Ri from "react-icons/ri";
-import Protect from "./Protected";
+import Protected from "./Protected";
 
 const menus = [
-  { label: "Beranda", icon: <Fa.FaTachometerAlt />, link: "/admin/beranda" },
-  { label: "Pembayaran", icon: <Ai.AiFillBank />, link: "/admin/pembayaran" },
-  { label: "Tapel", icon: <Fa6.FaChartLine />, link: "/admin/tapel" },
-  { label: "Sekolah", icon: <Fa.FaSchool />, link: "/admin/sekolah" },
-  { label: "Jenjang", icon: <Fa6.FaTimeline />, link: "/admin/tingkat" },
+  { label: "Beranda", icon: <Fa.FaTachometerAlt />, link: "/admin-beranda" },
+  { label: "Pembayaran", icon: <Ai.AiFillBank />, link: "/admin-pembayaran" },
+  { label: "Tapel", icon: <Fa6.FaChartLine />, link: "/admin-tapel" },
+  { label: "Sekolah", icon: <Fa.FaSchool />, link: "/admin-sekolah" },
+  { label: "Jenjang", icon: <Fa6.FaTimeline />, link: "/admin-tingkat" },
   {
     label: "Info",
     icon: <Hi.HiOutlineSpeakerphone />,
-    link: "/admin/info",
+    link: "/admin-info",
   },
-  { label: "Jadwal", icon: <Fa.FaCalendarCheck />, link: "/admin/jadwal" },
-  { label: "Kuisioner", icon: <Md.MdOutlineQuiz />, link: "/admin/kuisioner" },
-  { label: "User", icon: <Fa.FaUsers />, link: "/admin/users" },
-  { label: "Pendaftar", icon: <Fa.FaUserClock />, link: "/admin/Pendaftar" },
-  { label: "Diterima", icon: <Fa.FaUserCheck />, link: "/admin/diterima" },
-  { label: "Ditolak", icon: <Fa.FaUserAltSlash />, link: "/admin/ditolak" },
-  { label: "Statistik", icon: <Fa6.FaChartSimple />, link: "/admin/statistik" },
+  { label: "Jadwal", icon: <Fa.FaCalendarCheck />, link: "/admin-jadwal" },
+  { label: "Kuisioner", icon: <Md.MdOutlineQuiz />, link: "/admin-kuisioner" },
+  { label: "User", icon: <Fa.FaUsers />, link: "/admin-users" },
+  { label: "Pendaftar", icon: <Fa.FaUserClock />, link: "/admin-pendaftar" },
+  { label: "Diterima", icon: <Fa.FaUserCheck />, link: "/admin-diterima" },
+  { label: "Ditolak", icon: <Fa.FaUserAltSlash />, link: "/admin-ditolak" },
+  {
+    label: "Statistik",
+    icon: <Fa6.FaChartSimple />,
+    link: "/admin-pusat-data",
+  },
 ];
 
 const AdminMenu = () => {
-  Protect({ role: "admin" });
+  Protected({ role: "admin" });
   return (
     <nav
       id="sidebarMenu"

@@ -1,154 +1,212 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
+import { useSelector } from "react-redux";
+import { useMyPaymentQuery } from "../../api/services/ApiPembayaran";
+import NotAllowed from "../NotAllowed";
+import TableContainer from "../../components/TableContainer";
+import {
+  useAddFamilyMutation,
+  useDeleteFamilyMutation,
+  useGetFamilyFormQuery,
+} from "../../api/services/ApiFrom";
+import ModalComponent from "../../components/ModalComponent";
+import { toast } from "react-toastify";
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return ""; // Handle invalid dates
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+const calculateAge = (birthDate) => {
+  const today = new Date();
+  const birth = new Date(birthDate);
+  if (isNaN(birth.getTime())) return "-"; // Handle invalid date
+  let age = today.getFullYear() - birth.getFullYear();
+  const monthDiff = today.getMonth() - birth.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+    age--;
+  }
+  return age;
+};
 
 const Keluarga = () => {
-  const usersData = [
-    { id: 1, first: "Mark", last: "Otto", handle: "@mdo" },
-    { id: 2, first: "Jacob", last: "Thornton", handle: "@fat" },
-    { id: 3, first: "Larry", last: "Bird", handle: "@twitter" },
-    { id: 4, first: "John", last: "Doe", handle: "@jdoe" },
-    { id: 5, first: "Jane", last: "Smith", handle: "@jsmith" },
-    { id: 6, first: "Chris", last: "Evans", handle: "@cevans" },
-    { id: 7, first: "Emily", last: "Clark", handle: "@eclark" },
-    { id: 8, first: "Michael", last: "Scott", handle: "@mscott" },
-    { id: 9, first: "Pam", last: "Beesly", handle: "@pbeesly" },
-    { id: 10, first: "Dwight", last: "Schrute", handle: "@dschrute" },
-    { id: 11, first: "Jim", last: "Halpert", handle: "@jhalpert" },
-    { id: 12, first: "Kelly", last: "Kapoor", handle: "@kkapoor" },
-    { id: 13, first: "Stanley", last: "Hudson", handle: "@shudson" },
-    { id: 14, first: "Oscar", last: "Martinez", handle: "@omartinez" },
-    { id: 15, first: "Angela", last: "Martin", handle: "@amartin" },
-  ];
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [search, setSearch] = useState("");
+  const [name, setName] = useState("");
+  const [birthDate, setBirthDate] = useState("");
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const { user } = useSelector((state) => state.user);
+  const { data } = useMyPaymentQuery(user?.id, { skip: !user?.id });
+  const [addFamily, { data: msg, isSuccess, isLoading, error, reset }] =
+    useAddFamilyMutation();
+  const { data: rawData = {} } = useGetFamilyFormQuery(
+    { page, limit, search, id: user?.id },
+    {
+      skip: !user?.id,
+    }
+  );
+  const { families = [], totalPages } = rawData;
+  const [
+    deleteFamily,
+    {
+      data: delMsg,
+      isSuccess: delSuccess,
+      isLoading: delLoading,
+      error: delError,
+      reset: delReset,
+    },
+  ] = useDeleteFamilyMutation();
 
-  // Calculate pagination details
-  const totalPages = Math.ceil(usersData.length / rowsPerPage);
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const currentUsers = usersData.slice(startIndex, startIndex + rowsPerPage);
+  const addhandler = () => {
+    if (!name || !birthDate) {
+      return toast.error("Data harus diisi");
+    }
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+    const data = { nama: name, tgl: birthDate };
+
+    addFamily(data);
   };
 
-  const handleRowsPerPageChange = (event) => {
-    setRowsPerPage(Number(event.target.value));
-    setCurrentPage(1); // Reset to first page when rows per page change
-  };
+  const deletehandler = (id) => deleteFamily(id);
+
+  useEffect(() => {
+    if (delSuccess) {
+      toast.success(delMsg.message);
+      reset();
+    }
+
+    if (delError) {
+      toast.error(delError.data.message);
+      reset();
+    }
+  }, [delMsg, delSuccess, delError]);
 
   return (
     <Layout>
-      <div className="container-fluid">
-        <div className="col-12 col-lg-auto py-2 mb-lg-0 me-lg-3 d-flex align-items-center justify-content-between border-bottom">
-          <h5 className="py-2 m-0">Data Keluarga</h5>
-          <button
-            className="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#keluarga"
-          >
-            Tambah
-          </button>
+      {data?.ket ? (
+        <div className="container-fluid">
+          <div className="col-12 col-lg-auto py-2 mb-lg-2 me-lg-3 d-flex align-items-center justify-content-between border-bottom">
+            <h5 className="py-2 m-0">Data Keluarga</h5>
+            <button
+              className="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#keluarga"
+            >
+              Tambah
+            </button>
+          </div>
 
-          <div
-            className="modal fade"
-            id="keluarga"
-            tabIndex="-1"
-            aria-labelledby="exampleModalLabel"
-            aria-hidden="true"
+          <TableContainer
+            page={page}
+            setPage={(e) => setPage(e)}
+            setLimit={(e) => setLimit(e)}
+            onValue={(e) => setSearch(e)}
+            totalPages={totalPages}
           >
-            <div className="modal-dialog modal-dialog-centered">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title" id="exampleModalLabel">
-                    Tambah Anggota Keluarga
-                  </h5>
-                  <button
-                    type="button"
-                    className="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  ></button>
-                </div>
-                <div className="modal-body">
-                  <form action="" className="d-flex flex-column gap-2">
-                    <div className="input-group ">
-                      <span
-                        style={{ width: 130 }}
-                        className="input-group-text"
-                        id="inputGroup-sizing-default"
+            <table className="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">No</th>
+                  <th scope="col">Nama</th>
+                  <th scope="col">Tanggal Lahir</th>
+                  <th scope="col">Usia</th>
+                  <th scope="col">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {families?.map((user, index) => (
+                  <tr key={user.id}>
+                    <th scope="row">{index + 1}</th>
+                    <td className="text-start">{user.nama}</td>
+                    <td>{formatDate(user.tanggal_lahir)}</td>
+                    <td>{`${calculateAge(user.tanggal_lahir)} Thn`}</td>
+                    <td>
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => deletehandler(user.id)}
                       >
-                        Nama Lengkap
-                      </span>
-                      <input
-                        type="text"
-                        className="form-control"
-                        aria-label="Sizing example input"
-                        aria-describedby="inputGroup-sizing-default"
-                        required
-                      />
-                    </div>
+                        hapus
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TableContainer>
+        </div>
+      ) : (
+        <NotAllowed />
+      )}
 
-                    <div className="input-group ">
-                      <span
-                        style={{ width: 130 }}
-                        className="input-group-text"
-                        id="inputGroup-sizing-default"
-                      >
-                        Tanggal Lahir
-                      </span>
-                      <input
-                        type="date"
-                        className="form-control"
-                        aria-label="Sizing example input"
-                        aria-describedby="inputGroup-sizing-default"
-                        required
-                      />
-                    </div>
-                  </form>
-                </div>
-                <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    data-bs-dismiss="modal"
-                  >
-                    Tutup
-                  </button>
-                  <button type="button" className="btn btn-primary">
-                    Simpan
-                  </button>
-                </div>
-              </div>
-            </div>
+      <ModalComponent
+        id={"keluarga"}
+        isSuccess={isSuccess}
+        title={"Tambah Anggota Keluarga"}
+        data={msg}
+        error={error}
+        reset={reset}
+      >
+        <div className="modal-body d-flex flex-column gap-2">
+          <div className="input-group ">
+            <span
+              style={{ width: 130 }}
+              className="input-group-text"
+              id="inputGroup-sizing-default"
+            >
+              Nama Lengkap
+            </span>
+            <input
+              type="text"
+              className="form-control"
+              aria-label="Sizing example input"
+              aria-describedby="inputGroup-sizing-default"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+
+          <div className="input-group ">
+            <span
+              style={{ width: 130 }}
+              className="input-group-text"
+              id="inputGroup-sizing-default"
+            >
+              Tanggal Lahir
+            </span>
+            <input
+              type="date"
+              className="form-control"
+              aria-label="Sizing example input"
+              aria-describedby="inputGroup-sizing-default"
+              required
+              value={birthDate}
+              onChange={(e) => setBirthDate(e.target.value)}
+            />
           </div>
         </div>
-
-        <table className="table table-striped table-hover mt-2">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Nama</th>
-              <th scope="col">Tanggal Lahir</th>
-              <th scope="col">Usia</th>
-              <th scope="col">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentUsers.map((user, index) => (
-              <tr key={user.id}>
-                <th scope="row">{startIndex + index + 1}</th>
-                <td>{user.first}</td>
-                <td>{user.last}</td>
-                <td>{user.handle}</td>
-                <td>
-                  <button className="btn btn-danger">hapus</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+        <div className="modal-footer">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Tutup
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={addhandler}
+          >
+            Simpan
+          </button>
+        </div>
+      </ModalComponent>
     </Layout>
   );
 };

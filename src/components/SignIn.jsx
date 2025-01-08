@@ -56,9 +56,9 @@ const SignIn = () => {
   useEffect(() => {
     if (signIn) {
       if (user.peran === "user") {
-        navigate("/user/beranda");
+        navigate("/user-beranda");
       } else {
-        navigate("/admin/beranda");
+        navigate("/admin-beranda");
       }
     }
   }, [signIn, user]);
@@ -103,9 +103,9 @@ const SignIn = () => {
         <button
           className="btn btn-primary w-100 py-2"
           type="submit"
-          disabled={isSuccess}
+          disabled={signIn}
         >
-          {isSuccess ? (
+          {signIn ? (
             <div className="spinner-border text-warning" role="status">
               <span className="visually-hidden">Loading...</span>
             </div>

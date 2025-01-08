@@ -61,7 +61,7 @@ const UserPembayaran = () => {
       !formData.file ||
       formData.nominal === 0 ||
       !formData.nama ||
-      !formData.media === "defaul"
+      !formData.media === "default"
     ) {
       alert("Pantikan semua form diisi");
       return;
@@ -109,7 +109,7 @@ const UserPembayaran = () => {
                 {!data
                   ? `Belum ada transaksi`
                   : !data?.ket
-                  ? `Diproses`
+                  ? `Menunggu Konfirmasi`
                   : `Terkonfirmasi`}
               </strong>
             </p>
@@ -148,9 +148,7 @@ const UserPembayaran = () => {
             <h6 className="card-subtitle mb-2 text-muted">
               Pembayaran PPDB Nuraida Islamic Boarding School
             </h6>
-            <p className="card-subtitle mb-2 text-muted fst-italic">
-              Nomor Pembayaran
-            </p>
+
             <div className="card-text">
               <table className="table">
                 <tbody>

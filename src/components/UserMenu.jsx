@@ -6,28 +6,28 @@ import * as Fa from "react-icons/fa";
 import * as Fa6 from "react-icons/fa6";
 import * as Md from "react-icons/md";
 import * as Ri from "react-icons/ri";
-import Protect from "./Protected";
+import Protected from "./Protected";
 import { useSelector } from "react-redux";
 
 const menus = [
-  { label: "Beranda", icon: <Fa.FaTachometerAlt />, link: "/user/beranda" },
-  { label: "Pembayaran", icon: <Ai.AiOutlineBank />, link: "/user/pembayaran" },
-  { label: "Data Diri", icon: <Fa6.FaUserTag />, link: "/user/data-diri" },
-  { label: "Orang Tua", icon: <Ri.RiParentFill />, link: "/user/orang-tua" },
-  { label: "Keluarga", icon: <Md.MdFamilyRestroom />, link: "/user/keluarga" },
-  { label: "Alamat", icon: <Fa.FaAddressCard />, link: "/user/alamat" },
-  { label: "Sekolah", icon: <Fa.FaSchool />, link: "/user/sekolah" },
-  {
-    label: "Kesehatan",
-    icon: <Fa.FaHospitalSymbol />,
-    link: "/user/kesehatan",
-  },
-  { label: "Berkas", icon: <Fa6.FaFolderTree />, link: "/user/berkas" },
-  { label: "Kuisioner", icon: <Md.MdQuiz />, link: "/user/kuisioner" },
+  { label: "Beranda", icon: <Fa.FaTachometerAlt />, link: "/user-beranda" },
+  { label: "Pembayaran", icon: <Ai.AiOutlineBank />, link: "/user-pembayaran" },
+  { label: "Data Diri", icon: <Fa6.FaUserTag />, link: "/user-data-diri" },
+  { label: "Orang Tua", icon: <Ri.RiParentFill />, link: "/user-orang-tua" },
+  { label: "Keluarga", icon: <Md.MdFamilyRestroom />, link: "/user-keluarga" },
+  { label: "Alamat", icon: <Fa.FaAddressCard />, link: "/user-alamat" },
+  { label: "Sekolah", icon: <Fa.FaSchool />, link: "/user-sekolah" },
+  // {
+  //   label: "Kesehatan",
+  //   icon: <Fa.FaHospitalSymbol />,
+  //   link: "/user-kesehatan",
+  // },
+  { label: "Berkas", icon: <Fa6.FaFolderTree />, link: "/user-berkas" },
+  { label: "Kuisioner", icon: <Md.MdQuiz />, link: "/user-kuisioner" },
 ];
 
 const UserMenu = () => {
-  Protect({ role: "user" });
+  Protected({ role: "user" });
   return (
     <nav
       id="sidebarMenu"

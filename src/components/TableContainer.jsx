@@ -63,7 +63,7 @@ const TableContainer = ({
         </div>
       </div>
 
-      <div className="table-responsive rounded shadow my-2">{children}</div>
+      <div className="table-responsive my-2">{children}</div>
 
       <nav className="d-flex justify-content-between align-items-center">
         <ul className="pagination pagination-sm justify-content-center m-0">
