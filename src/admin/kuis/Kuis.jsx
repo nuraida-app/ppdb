@@ -125,15 +125,9 @@ const Kuis = () => {
           <table className="table table-striped table-hover mt-2">
             <thead>
               <tr>
-                <th scope="col" style={{ width: 50 }}>
-                  #
-                </th>
-                <th scope="col" style={{ width: 110 }}>
-                  Jenis
-                </th>
-                <th scope="col" style={{ width: 600 }}>
-                  Soal
-                </th>
+                <th scope="col">#</th>
+                <th scope="col">Jenis</th>
+                <th scope="col">Soal</th>
                 <th scope="col">Pengisi</th>
                 <th scope="col">Aksi</th>
               </tr>
@@ -201,7 +195,7 @@ const Kuis = () => {
           >
             <option value="default">Pengisi</option>
             <option value="Ortu">Orang Tua</option>
-            <option value="Siswa">Calon Peserta Didik</option>
+            <option value="Calon Peserta Didik">Calon Peserta Didik</option>
           </select>
 
           <Editor

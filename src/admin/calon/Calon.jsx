@@ -17,7 +17,7 @@ const Calon = () => {
     const element = areaRef.current;
     const options = {
       margin: 10,
-      filename: `${data?.nama}-formulir.pdf`,
+      filename: `${data?.formulir.nama}-formulir.pdf`,
       image: { type: "jpeg", quality: 0.98 },
       html2canvas: { scale: 2 },
       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
@@ -58,7 +58,7 @@ const Calon = () => {
                 <hr />
 
                 {/* Formulir */}
-                <Formulir data={data} />
+                <Formulir data={data?.formulir} />
               </div>
             </div>
           </div>

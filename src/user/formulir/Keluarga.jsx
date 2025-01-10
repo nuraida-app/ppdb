@@ -8,6 +8,7 @@ import {
   useAddFamilyMutation,
   useDeleteFamilyMutation,
   useGetFamilyFormQuery,
+  useGetFormQuery,
 } from "../../api/services/ApiFrom";
 import ModalComponent from "../../components/ModalComponent";
 import { toast } from "react-toastify";
@@ -34,23 +35,17 @@ const calculateAge = (birthDate) => {
 };
 
 const Keluarga = () => {
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
-  const [search, setSearch] = useState("");
   const [name, setName] = useState("");
   const [birthDate, setBirthDate] = useState("");
 
   const { user } = useSelector((state) => state.user);
   const { data } = useMyPaymentQuery(user?.id, { skip: !user?.id });
+  const { data: rowData } = useGetFormQuery(user?.id, { skip: !user?.id });
+  const families = rowData?.families;
+
   const [addFamily, { data: msg, isSuccess, isLoading, error, reset }] =
     useAddFamilyMutation();
-  const { data: rawData = {} } = useGetFamilyFormQuery(
-    { page, limit, search, id: user?.id },
-    {
-      skip: !user?.id,
-    }
-  );
-  const { families = [], totalPages } = rawData;
+
   const [
     deleteFamily,
     {
@@ -88,6 +83,8 @@ const Keluarga = () => {
 
   return (
     <Layout>
+      <h5 className="py-2 border-bottom">Data Keluarga</h5>
+
       {data?.ket ? (
         <div className="container-fluid">
           <div className="col-12 col-lg-auto py-2 mb-lg-2 me-lg-3 d-flex align-items-center justify-content-between border-bottom">
@@ -101,13 +98,7 @@ const Keluarga = () => {
             </button>
           </div>
 
-          <TableContainer
-            page={page}
-            setPage={(e) => setPage(e)}
-            setLimit={(e) => setLimit(e)}
-            onValue={(e) => setSearch(e)}
-            totalPages={totalPages}
-          >
+          <div className="table-responsive">
             <table className="table table-striped table-hover">
               <thead>
                 <tr>
@@ -137,7 +128,7 @@ const Keluarga = () => {
                 ))}
               </tbody>
             </table>
-          </TableContainer>
+          </div>
         </div>
       ) : (
         <NotAllowed />

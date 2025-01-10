@@ -11,6 +11,7 @@ import { ApiInfo } from "./services/ApiInfo";
 import { ApiJadwal } from "./services/ApiJadwal";
 import { ApiKuis } from "./services/ApiKuis";
 import { ApiFrom } from "./services/ApiFrom";
+import { ApiWilayah } from "./services/ApiWilayah";
 
 const store = configureStore({
   reducer: {
@@ -25,6 +26,7 @@ const store = configureStore({
     [ApiJadwal.reducerPath]: ApiJadwal.reducer,
     [ApiKuis.reducerPath]: ApiKuis.reducer,
     [ApiFrom.reducerPath]: ApiFrom.reducer,
+    [ApiWilayah.reducerPath]: ApiWilayah.reducer,
     [ApiStatistik.reducerPath]: ApiStatistik.reducer,
   },
 
@@ -40,6 +42,7 @@ const store = configureStore({
       ApiJadwal.middleware,
       ApiKuis.middleware,
       ApiFrom.middleware,
+      ApiWilayah.middleware,
       ApiStatistik.middleware,
     ]),
 });

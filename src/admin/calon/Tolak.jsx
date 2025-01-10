@@ -63,20 +63,23 @@ const Tolak = () => {
                         className="btn btn-success"
                         onClick={() =>
                           window.open(
-                            `https://wa.me/${user.tlp_ayah}`,
+                            `https://wa.me/${user.ayah_no_tlp}`,
                             "_blank"
                           )
                         }
                       >
-                        {`Ayah: ${user.tlp_ayah}`}
+                        {`Ayah: ${user.ayah_no_tlp}`}
                       </button>
                       <button
                         className="btn btn-success"
                         onClick={() =>
-                          window.open(`https://wa.me/${user.tlp_ibu}`, "_blank")
+                          window.open(
+                            `https://wa.me/${user.ibu_no_tlp}`,
+                            "_blank"
+                          )
                         }
                       >
-                        {`Ibu: ${user.tlp_ibu}`}
+                        {`Ibu: ${user.ibu_no_tlp}`}
                       </button>
                     </div>
                   </td>

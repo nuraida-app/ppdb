@@ -38,7 +38,9 @@ const formatDate = (dateString) => {
 const Ortu = () => {
   const { user } = useSelector((state) => state.user);
   const { data } = useMyPaymentQuery(user?.id, { skip: !user?.id });
-  const { data: detail } = useGetFormQuery(user?.id, { skip: !user?.id });
+  const { data: rowData } = useGetFormQuery(user?.id, { skip: !user?.id });
+  const detail = rowData?.formulir;
+
   const [addParents, { data: msg, isSuccess, isLoading, error, reset }] =
     useAddParentsMutation();
 
@@ -72,9 +74,15 @@ const Ortu = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log(formData);
+    const processedFormData = {
+      ...formData,
+      ayah_no_tlp: convertPhoneNumber(formData.ayah_no_tlp),
+      ibu_no_tlp: convertPhoneNumber(formData.ibu_no_tlp),
+    };
 
-    addParents({ body: formData, userId: user?.id });
+    console.log(processedFormData);
+
+    addParents({ body: processedFormData, userId: user?.id });
   };
 
   useEffect(() => {

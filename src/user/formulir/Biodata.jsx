@@ -26,9 +26,9 @@ const labels = [
   { label: "No KK", type: "text" },
   { label: "NIK", type: "text" },
   { label: "NISN", type: "text" },
-  { label: "TB", type: "text" },
-  { label: "BB", type: "text" },
-  { label: "Lingkar Kepala", type: "text" },
+  { label: "TB", type: "text", placeholder: "Tanpa cm" },
+  { label: "BB", type: "text", placeholder: "Tanpa kg" },
+  { label: "Lingkar Kepala", type: "text", placeholder: "Tanpa cm" },
 ];
 
 const formatDate = (dateString) => {
@@ -43,7 +43,8 @@ const formatDate = (dateString) => {
 const Biodata = () => {
   const { user } = useSelector((state) => state.user);
   const { data } = useMyPaymentQuery(user?.id, { skip: !user?.id });
-  const { data: detail } = useGetFormQuery(user?.id, { skip: !user?.id });
+  const { data: rowData } = useGetFormQuery(user?.id, { skip: !user?.id });
+  const detail = rowData?.formulir;
 
   const [getLevels, { data: grades = {} }] = useGetLevelsMutation();
   const { levels = [] } = grades;
@@ -223,6 +224,7 @@ const Biodata = () => {
                   className="form-control"
                   aria-label="Sizing example input"
                   aria-describedby="inputGroup-sizing-default"
+                  placeholder={item.placeholder}
                   required
                   value={
                     formData[

@@ -92,7 +92,6 @@ const Pembayaran = () => {
                     >
                       Konfirmasi
                     </button>
-                    <button className="btn btn-danger">Hapus</button>
                   </div>
                 </td>
               </tr>

@@ -44,8 +44,11 @@ const SignIn = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      console.log(data.message);
-      loadUser();
+      load()
+        .unwrap()
+        .then((user) => {
+          dispatch(setLogin(user));
+        });
     }
 
     if (error) {

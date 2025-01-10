@@ -65,34 +65,34 @@ const Formulir = ({ data }) => {
       <div className="row">
         <div className="col-lg-6 col-12">
           <div className="d-flex flex-column gap-1 align-items-start">
-            <InputCustom label="NIK" value={data?.nik_ayah} />
-            <InputCustom label="Nama" value={data?.nama_ayah} />
+            <InputCustom label="NIK" value={data?.ayah_nik} />
+            <InputCustom label="Nama" value={data?.ayah_nama} />
 
-            <InputCustom label="Tempat Lahir" value={data?.lahir_ayah} />
+            <InputCustom label="Tempat Lahir" value={data?.ayah_tempat_lahir} />
             <InputCustom
               label="Tanggal Lahir"
-              value={formatDate(data?.tanggal_ayah)}
+              value={formatDate(data?.ayah_tanggal_lahir)}
             />
-            <InputCustom label="Pendidikan" value={data?.pendidikan_ayah} />
-            <InputCustom label="Pekerjaan" value={data?.pekerjaan_ayah} />
+            <InputCustom label="Pendidikan" value={data?.ayah_pendidikan} />
+            <InputCustom label="Pekerjaan" value={data?.ayah_pekerjaan} />
 
-            <InputCustom label="No Tlp" value={data?.tlp_ayah} />
+            <InputCustom label="No Tlp" value={data?.ayah_no_tlp} />
           </div>
         </div>
         <div className="col-lg-6 col-12">
           <div className="d-flex flex-column gap-1 align-items-start">
-            <InputCustom label="NIK" value={data?.nik_ibu} />
-            <InputCustom label="Nama" value={data?.nama_ibu} />
+            <InputCustom label="NIK" value={data?.ibu_nik} />
+            <InputCustom label="Nama" value={data?.ibu_nama} />
 
-            <InputCustom label="Tempat Lahir" value={data?.lahir_ibu} />
+            <InputCustom label="Tempat Lahir" value={data?.ibu_tempat_lahir} />
             <InputCustom
               label="Tanggal Lahir"
               value={formatDate(data?.tanggal_ibu)}
             />
-            <InputCustom label="Pendidikan" value={data?.pendidikan_ibu} />
-            <InputCustom label="Pekerjaan" value={data?.pekerjaan_ibu} />
+            <InputCustom label="Pendidikan" value={data?.ibu_pendidikan} />
+            <InputCustom label="Pekerjaan" value={data?.ibu_pekerjaan} />
 
-            <InputCustom label="No Tlp" value={data?.tlp_ibu} />
+            <InputCustom label="No Tlp" value={data?.ibu_no_tlp} />
           </div>
         </div>
       </div>

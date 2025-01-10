@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import TableContainer from "../../components/TableContainer";
-import { useGetFormsQuery } from "../../api/services/ApiFrom";
+import {
+  useChangeStatusMutation,
+  useGetFormsQuery,
+} from "../../api/services/ApiFrom";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const columns = [
   { label: "No" },
@@ -16,15 +20,41 @@ const columns = [
 const Process = () => {
   const navigate = useNavigate();
 
-  const status = "Diproses";
+  const status1 = "Diproses";
+  const status2 = "Diterima";
+  const status3 = "Ditolak";
+
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [search, setSearch] = useState("");
 
-  const { data = {} } = useGetFormsQuery({ status, page, limit, search });
+  const { data = {} } = useGetFormsQuery({
+    status: status1,
+    page,
+    limit,
+    search,
+  });
   const { users = [], totalPages } = data;
+  const [changeStatus, { data: msg, isSuccess, isLoading, error, reset }] =
+    useChangeStatusMutation();
 
   const goToLink = (id) => navigate(`/admin-pendaftar/${id}`);
+
+  const change = (id, status) => {
+    changeStatus({ id, status });
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(msg.message);
+      reset();
+    }
+
+    if (error) {
+      toast.error(error.data.message);
+      reset();
+    }
+  }, [msg, isSuccess, error]);
   return (
     <Layout>
       <div className="container-fluid">
@@ -62,27 +92,40 @@ const Process = () => {
                         className="btn btn-success"
                         onClick={() =>
                           window.open(
-                            `https://wa.me/${user.tlp_ayah}`,
+                            `https://wa.me/${user.ayah_no_tlp}`,
                             "_blank"
                           )
                         }
                       >
-                        {`Ayah: ${user.tlp_ayah}`}
+                        {`Ayah: ${user.ayah_no_tlp}`}
                       </button>
                       <button
                         className="btn btn-success"
                         onClick={() =>
-                          window.open(`https://wa.me/${user.tlp_ibu}`, "_blank")
+                          window.open(
+                            `https://wa.me/${user.ibu_no_tlp}`,
+                            "_blank"
+                          )
                         }
                       >
-                        {`Ibu: ${user.tlp_ibu}`}
+                        {`Ibu: ${user.ibu_no_tlp}`}
                       </button>
                     </div>
                   </td>
                   <td>
                     <div className="d-flex align-items-center justify-content-center gap-2">
-                      <button className="btn btn-primary">Terima</button>
-                      <button className="btn btn-danger">Tolak</button>
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => change(user.userid, status2)}
+                      >
+                        Terima
+                      </button>
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => change(user.userid, status3)}
+                      >
+                        Tolak
+                      </button>
                       <button
                         className="btn btn-info"
                         onClick={() => goToLink(user.userid)}

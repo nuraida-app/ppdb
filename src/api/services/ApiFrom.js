@@ -18,23 +18,10 @@ export const ApiFrom = createApi({
     "forms",
   ],
   endpoints: (builder) => ({
-    waited: builder.mutation({
-      query: (userId) => ({
-        url: `/menunggu/${userId}`,
-        method: "PUT",
-      }),
-      invalidatesTags: ["form", "forms"],
-    }),
-    accepted: builder.mutation({
-      query: (userId) => ({
-        url: `/diterima/${userId}`,
-        method: "PUT",
-      }),
-      invalidatesTags: ["form", "forms"],
-    }),
-    rejected: builder.mutation({
-      query: (userId) => ({
-        url: `/ditolak/${userId}`,
+    changeStatus: builder.mutation({
+      query: ({ id, status }) => ({
+        url: `/ubah-status`,
+        params: { id, status },
         method: "PUT",
       }),
       invalidatesTags: ["form", "forms"],
@@ -60,10 +47,6 @@ export const ApiFrom = createApi({
       }),
       invalidatesTags: ["student", "form"],
     }),
-    getAddressFrom: builder.query({
-      query: (userId) => `/alamat/${userId}`,
-      providesTags: ["address"],
-    }),
     addAddress: builder.mutation({
       query: (body) => ({
         url: `/alamat`,
@@ -81,10 +64,6 @@ export const ApiFrom = createApi({
       }),
       invalidatesTags: ["parents", "form"],
     }),
-    getSchoolFrom: builder.query({
-      query: (userId) => `/asal-sekolah/${userId}`,
-      providesTags: ["school"],
-    }),
     addSchool: builder.mutation({
       query: (body) => ({
         url: "/asal-sekolah",
@@ -94,9 +73,8 @@ export const ApiFrom = createApi({
       invalidatesTags: ["school", "form"],
     }),
     getFamilyForm: builder.query({
-      query: ({ page, limit, search, id }) => ({
+      query: (id) => ({
         url: `/keluarga/${id}`,
-        params: { page, limit, search },
         method: "GET",
       }),
       providesTags: ["family"],
@@ -120,9 +98,9 @@ export const ApiFrom = createApi({
       query: (userId) => `/berkas/${userId}`,
       providesTags: ["files"],
     }),
-    uploadFiles: builder.mutation({
+    uploadFile: builder.mutation({
       query: (body) => ({
-        url: "/upload-berkas",
+        url: "/berkas",
         method: "POST",
         body,
       }),
@@ -139,21 +117,17 @@ export const ApiFrom = createApi({
 });
 
 export const {
-  useWaitedMutation,
-  useAcceptedMutation,
-  useRejectedMutation,
+  useChangeStatusMutation,
   useGetFormsQuery,
   useGetFormQuery,
   useAddStudentFormMutation,
-  useGetAddressFromQuery,
   useAddAddressMutation,
   useAddParentsMutation,
-  useGetSchoolFromQuery,
   useAddSchoolMutation,
   useGetFamilyFormQuery,
   useAddFamilyMutation,
   useDeleteFamilyMutation,
   useGetFilesQuery,
-  useUploadFilesMutation,
+  useUploadFileMutation,
   useDeleteFileMutation,
 } = ApiFrom;

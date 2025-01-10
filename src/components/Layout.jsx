@@ -34,7 +34,7 @@ const Layout = ({ children, title }) => {
       <header className="navbar navbar-dark sticky-top bg-dark flex-md-nowrap py-2 shadow">
         <a
           className="navbar-brand col-md-3 col-lg-2 px-3 me-0 mx-5"
-          href="/user/beranda"
+          href={user?.peran === "user" ? "user-beranda" : "admin-beranda"}
         >
           {user?.nama}
         </a>
