@@ -40,7 +40,7 @@ router.post("/sign-in", async (req, res) => {
     return res
       .status(200)
       .cookie("token", token, { httpOnly: true, maxAge: 43200000 })
-      .json({ message: "Berhasil masuk" });
+      .json(user);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -75,7 +75,7 @@ router.post("/sign-up", async (req, res) => {
     return res
       .status(200)
       .cookie("token", token, { httpOnly: true, maxAge: 43200000 }) // 12 jam
-      .json({ message: "Pendaftaran Berhasil" });
+      .json(user.rows[0]);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
