@@ -1,0 +1,1 @@
+import{j as s}from"./index-BU72W7iL.js";const n=({color:r})=>s.jsx("div",{className:`spinner-border ${r}`,role:"status",children:s.jsx("span",{className:"visually-hidden",children:"Loading..."})});export{n as S};
