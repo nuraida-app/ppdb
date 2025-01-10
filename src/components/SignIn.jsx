@@ -14,7 +14,7 @@ const SignIn = () => {
   const navigate = useNavigate();
 
   const { user, signIn } = useSelector((state) => state.user);
-  const [login, { data, isLoading, error, isSuccess }] = useLoginMutation();
+  const [login, { isLoading, error, isSuccess }] = useLoginMutation();
   const [load] = useLoadMutation();
 
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -31,40 +31,31 @@ const SignIn = () => {
   // Function to handle form submission
   const submitHandler = (e) => {
     e.preventDefault();
-    login(formData);
+    login(formData)
+      .unwrap()
+      .then(() => {
+        load()
+          .unwrap()
+          .then((user) => {
+            dispatch(setLogin(user));
+          });
+      })
+      .catch((err) => {
+        toast.error(err.data?.message || "Login failed");
+      });
   };
 
-  const loadUser = useCallback(() => {
-    load()
-      .unwrap()
-      .then((user) => {
-        dispatch(setLogin(user));
-      });
-  }, [load]);
-
   useEffect(() => {
-    if (isSuccess) {
-      load()
-        .unwrap()
-        .then((user) => {
-          dispatch(setLogin(user));
-        });
-    }
-
-    if (error) {
-      toast.error(error.data.message);
-    }
-  }, [isSuccess, error, data]);
-
-  useEffect(() => {
-    if (signIn) {
+    if (signIn && user) {
       if (user.peran === "user") {
         navigate("/user-beranda");
-      } else {
+      } else if (user.peran === "admin") {
         navigate("/admin-beranda");
+      } else if (user.peran) {
+        toast.error("Peran tidak valid");
       }
     }
-  }, [signIn, user]);
+  }, [signIn, user, navigate]);
 
   return (
     <div
@@ -106,9 +97,9 @@ const SignIn = () => {
         <button
           className="btn btn-primary w-100 py-2"
           type="submit"
-          disabled={signIn}
+          disabled={isLoading && !user?.peran}
         >
-          {signIn ? (
+          {isLoading && !user?.peran ? (
             <div className="spinner-border text-warning" role="status">
               <span className="visually-hidden">Loading...</span>
             </div>

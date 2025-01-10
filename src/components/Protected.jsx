@@ -8,14 +8,10 @@ const Protected = ({ role }) => {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (
-        !user ||
-        (user?.peran !== "admin" && user?.peran !== "user") ||
-        !signIn
-      ) {
+      if (!user || user?.peran !== role || !signIn) {
         navigate("/");
       }
-    }, 300);
+    }, 2000);
 
     return () => clearTimeout(timeout);
   }, [user, signIn, navigate]);

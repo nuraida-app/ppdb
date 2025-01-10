@@ -50,11 +50,16 @@ function App() {
   const [load] = useLoadMutation();
 
   useEffect(() => {
-    load()
-      .unwrap()
-      .then((user) => {
+    const fetchUser = async () => {
+      try {
+        const user = await load().unwrap();
         dispatch(setLogin(user));
-      });
+      } catch (error) {
+        console.error("Failed to load user data", error);
+      }
+    };
+
+    fetchUser();
   }, [dispatch, load]);
   return (
     <BrowserRouter>
