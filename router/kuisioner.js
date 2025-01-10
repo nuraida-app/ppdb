@@ -6,43 +6,51 @@ const router = express.Router();
 
 router.get("/get", authorize("admin", "user"), async (req, res) => {
   try {
-    const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 10;
-    const search = req.query.search;
+    const role = req.user.peran;
 
-    const offset = (page - 1) * limit;
+    if (role === "admin") {
+      const page = parseInt(req.query.page, 10) || 1;
+      const limit = parseInt(req.query.limit, 10) || 10;
+      const search = req.query.search;
 
-    let questions = [];
-    let totalPages;
+      const offset = (page - 1) * limit;
 
-    if (search) {
-      const count = await client.query(
-        `SELECT COUNT(*) FROM kuis WHERE LOWER(soal) LIKE LOWER($1)`,
-        ["%" + search + "%"]
-      );
+      let questions = [];
+      let totalPages;
 
-      totalPages = Math.ceil(count.rows[0].count / limit);
+      if (search) {
+        const count = await client.query(
+          `SELECT COUNT(*) FROM kuis WHERE LOWER(soal) LIKE LOWER($1)`,
+          ["%" + search + "%"]
+        );
 
-      const data = await client.query(
-        `SELECT * FROM kuis WHERE LOWER(soal) LIKE LOWER($1) ORDER BY id DESC LIMIT $2 OFFSET $3`,
-        ["%" + search + "%", limit, offset]
-      );
+        totalPages = Math.ceil(count.rows[0].count / limit);
 
-      questions = data.rows;
+        const data = await client.query(
+          `SELECT * FROM kuis WHERE LOWER(soal) LIKE LOWER($1) ORDER BY id DESC LIMIT $2 OFFSET $3`,
+          ["%" + search + "%", limit, offset]
+        );
 
-      res.status(200).json({ questions, totalPages });
+        questions = data.rows;
+
+        res.status(200).json({ questions, totalPages });
+      } else {
+        const count = await client.query(`SELECT COUNT(*) FROM kuis`);
+        totalPages = Math.ceil(count.rows[0].count / limit);
+
+        const data = await client.query(
+          `SELECT * FROM kuis ORDER BY id DESC LIMIT $1 OFFSET $2`,
+          [limit, offset]
+        );
+
+        questions = data.rows;
+
+        res.status(200).json({ questions, totalPages });
+      }
     } else {
-      const count = await client.query(`SELECT COUNT(*) FROM kuis`);
-      totalPages = Math.ceil(count.rows[0].count / limit);
+      const data = await client.query(`SELECT * FROM kuis ORDER BY id ASC`);
 
-      const data = await client.query(
-        `SELECT * FROM kuis ORDER BY id DESC LIMIT $1 OFFSET $2`,
-        [limit, offset]
-      );
-
-      questions = data.rows;
-
-      res.status(200).json({ questions, totalPages });
+      res.status(200).json(data.rows);
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -102,6 +110,8 @@ router.post("/add-answer", authorize("user"), async (req, res) => {
   try {
     const { userId, quizId, answer } = req.body;
 
+    console.log(req.body);
+
     const data = await client.query(
       `SELECT * FROM jawaban WHERE 
      user_id =$1 AND soal_id = $2`,
@@ -126,6 +136,7 @@ router.post("/add-answer", authorize("user"), async (req, res) => {
       res.status(200).json({ message: "Berhasil disimpan" });
     }
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: error.message });
   }
 });

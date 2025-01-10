@@ -1,7 +1,54 @@
 import express from "express";
 import { client } from "../config/config.js";
 import { authorize } from "../middleware/authorize.js";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+
 const router = express.Router();
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    // Ganti spasi dengan _
+    const sanitizedUserName = req.user.nama.replace(/\s+/g, "_");
+    const userFolder = `./assets/berkas/${sanitizedUserName}`;
+
+    // Buat folder jika belum ada
+    if (!fs.existsSync(userFolder)) {
+      fs.mkdirSync(userFolder, { recursive: true });
+    }
+
+    cb(null, userFolder);
+  },
+  filename: (req, file, cb) => {
+    const sanitizedUserName = req.user.nama.replace(/\s+/g, "_");
+    const sanitizedFileName = file.fieldname.replace(/\s+/g, "_");
+    const fileExtension = path.extname(file.originalname);
+    cb(null, `${sanitizedUserName}_${sanitizedFileName}${fileExtension}`);
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // Maksimum ukuran file 10MB
+  },
+  fileFilter: (req, file, cb) => {
+    const fileTypes = /pdf|png|jpe?g/; // PDF, PNG, JPG, JPEG
+    const extName = fileTypes.test(
+      path.extname(file.originalname).toLowerCase()
+    );
+    const mimeType = fileTypes.test(file.mimetype);
+
+    if (extName && mimeType) {
+      return cb(null, true);
+    } else {
+      cb(new Error("Hanya file PDF, PNG, JPG, atau JPEG yang diizinkan"));
+    }
+  },
+});
 
 // Status pendaftaran
 router.get("/proses", authorize("admin"), async (req, res) => {
@@ -85,7 +132,7 @@ router.get("/:userid", authorize("admin", "user"), async (req, res) => {
   try {
     const id = req.params.userid;
 
-    const data = await client.query(
+    const data1 = await client.query(
       `SELECT jenjang.nama AS jenjang, 
         jenjang.id AS jenjang_id, 
         sekolah.nama AS sekolah, 
@@ -110,10 +157,30 @@ router.get("/:userid", authorize("admin", "user"), async (req, res) => {
       [id]
     );
 
-    if (data.rowCount > 0) {
-      const formulir = data.rows[0];
+    const data2 = await client.query(
+      `SELECT * FROM keluarga WHERE user_id = $1`,
+      [id]
+    );
+    const data3 = await client.query(`SELECT * FROM alamat WHERE userid = $1`, [
+      id,
+    ]);
+    const data4 = await client.query(
+      `SELECT * FROM asal_sekolah WHERE userid = $1`,
+      [id]
+    );
+    const data5 = await client.query(
+      `SELECT * FROM berkas WHERE user_id = $1`,
+      [id]
+    );
 
-      res.status(200).json(formulir);
+    if (data1.rowCount > 0) {
+      const formulir = data1.rows[0];
+      const families = data2.rows;
+      const address = data3.rows[0];
+      const school = data4.rows[0];
+      const documents = data5.rows;
+
+      res.status(200).json({ formulir, families, address, school, documents });
     } else {
       return res.status(404).json({ message: "Data tidak ditemukan" });
     }
@@ -184,34 +251,7 @@ router.post("/data-diri", authorize("user", "admin"), async (req, res) => {
 
       res.status(200).json({ message: "Data berhasil diperbarui" });
     } else {
-      await client.query(
-        `INSERT INTO pendaftar(userid, jenjang_id, tapel_id, sekolah_id, nisn,
-            no_kk, nik, no_akta, nama, tempat_lahir, tanggal_lahir,
-            kelamin, agama, anak_ke, jml_saudara, tinggi, berat, kepala) VALUES($1, $2,
-            $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) RETURNING *`,
-        [
-          userId,
-          jenjang,
-          tapel,
-          sekolah,
-          nisn,
-          no_kk,
-          nik,
-          no_akta,
-          nama_lengkap,
-          tempat_lahir,
-          tanggal_lahir,
-          kelamin,
-          agama,
-          anak_ke,
-          jml_saudara,
-          tb,
-          bb,
-          lingkar_kepala,
-        ]
-      );
-
-      res.status(200).json({ message: "Data berhasil disimpan" });
+      res.status(404).json({ message: "Lakukan Pembayaran Terlebih Dahulu" });
     }
   } catch (error) {
     console.error(error);
@@ -302,54 +342,15 @@ router.post("/keluarga", authorize("user"), async (req, res) => {
 
 router.get("/keluarga/:id", authorize("user"), async (req, res) => {
   try {
-    const page = parseInt(req.query.page, 10);
-    const limit = parseInt(req.query.limit, 10);
-    const search = req.query.search
-      ? `%${req.query.search.toLowerCase()}%`
-      : null;
+    const id = parseInt(req.params.id, 10);
+    const data = await client.query(
+      `SELECT * FROM keluarga WHERE user_id = $1 ORDER BY tanggal_lahir`,
+      [id]
+    );
 
-    const offset = (page - 1) * limit;
+    const families = data.rows;
 
-    let families = [];
-    let totalPages;
-
-    if (search) {
-      const countQuery = await client.query(
-        `SELECT COUNT(*) FROM keluarga WHERE user_id = $1
-        AND LOWER(nama) LIKE $2`,
-        [req.user.id, search]
-      );
-
-      const total = parseInt(countQuery.rows[0].count, 10);
-
-      totalPages = Math.ceil(total / limit);
-
-      const data = await client.query(
-        `SELECT * FROM keluarga WHERE user_id = $1 AND LOWER(nama) LIKE $2
-          ORDER BY tanggal_lahir DESC LIMIT $3 OFFSET $4`,
-        [req.user.id, search, limit, offset]
-      );
-
-      families = data.rows;
-    } else {
-      const countQuery = await client.query(
-        `SELECT COUNT(*) FROM keluarga WHERE user_id = $1`,
-        [req.user.id]
-      );
-
-      const total = parseInt(countQuery.rows[0].count, 10);
-
-      totalPages = Math.ceil(total / limit);
-
-      const data = await client.query(
-        `SELECT * FROM keluarga WHERE user_id = $1 ORDER BY tanggal_lahir DESC LIMIT $2 OFFSET $3`,
-        [req.user.id, limit, offset]
-      );
-
-      families = data.rows;
-    }
-
-    res.status(200).json({ families, totalPages });
+    res.status(200).json(families);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: error.message });
@@ -363,6 +364,145 @@ router.delete("/hapus-keluarga/:id", authorize("user"), async (req, res) => {
     await client.query(`DELETE FROM keluarga WHERE id = $1`, [id]);
 
     res.status(200).json({ message: "Berhasil dihapus" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+// Alamat
+router.post("/alamat", authorize("user"), async (req, res) => {
+  try {
+    const { alamat, desa, jarak, kecamatan, kode_pos, kota, media, provinsi } =
+      req.body;
+    const userId = req.user.id;
+
+    const data = await client.query(`SELECT * from alamat WHERE userid = $1`, [
+      userId,
+    ]);
+
+    if (data.rowCount > 0) {
+      await client.query(
+        `UPDATE alamat SET alamat = $1, desa = $2, jarak = $3, 
+      kecamatan = $4, kode_pos = $5, kota = $6, transportasi = $7, 
+      provinsi = $8 WHERE userid = $9`,
+        [
+          alamat,
+          desa,
+          jarak,
+          kecamatan,
+          kode_pos,
+          kota,
+          media,
+          provinsi,
+          userId,
+        ]
+      );
+      return res.status(200).json({ message: "Data berhasil diperbarui" });
+    } else {
+      await client.query(
+        `INSERT INTO alamat(userid, alamat, desa, jarak, kecamatan, 
+          kode_pos, kota, transportasi, provinsi) 
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
+        [
+          userId,
+          alamat,
+          desa,
+          jarak,
+          kecamatan,
+          kode_pos,
+          kota,
+          media,
+          provinsi,
+        ]
+      );
+      return res.status(200).json({ message: "Data berhasil disimpan" });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+// Asal Sekolah
+router.post("/asal-sekolah", authorize("user"), async (req, res) => {
+  try {
+    const { desa, kecamatan, kota, nama_sekolah, npsn, provinsi } = req.body;
+    const userId = req.user.id;
+
+    const data = await client.query(
+      `SELECT * from asal_sekolah WHERE userid = $1`,
+      [userId]
+    );
+
+    if (data.rowCount > 0) {
+      await client.query(
+        `UPDATE asal_sekolah SET desa = $1, kecamatan = $2, kota = $3, 
+          nama = $4, npsn = $5, provinsi = $6 WHERE userid = $7`,
+        [desa, kecamatan, kota, nama_sekolah, npsn, provinsi, userId]
+      );
+      return res.status(200).json({ message: "Data berhasil diperbarui" });
+    } else {
+      await client.query(
+        `INSERT INTO asal_sekolah(userid, desa, kecamatan, kota, nama, 
+          npsn, provinsi) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+        [userId, desa, kecamatan, kota, nama_sekolah, npsn, provinsi]
+      );
+      return res.status(200).json({ message: "Data berhasil disimpan" });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+// Berrkas
+router.post("/berkas", authorize("user"), upload.any(), async (req, res) => {
+  try {
+    const sanitizedUserName = req.user.nama.replace(/\s+/g, "_");
+    const filePath = req.files[0].fieldname;
+    const fileExtension = path.extname(req.files[0].originalname);
+    const fileLink = `${process.env.SERVER}/assets/berkas/${sanitizedUserName}/${sanitizedUserName}_${filePath}${fileExtension}`;
+
+    const id = req.user.id;
+    const file_name = req.body.name;
+
+    const data = await client.query(`SELECT * FROM berkas WHERE user_id = $1`, [
+      id,
+    ]);
+
+    if (data.rowCount > 0 && data.rows[0].file_name === file_name) {
+      await client.query(
+        `UPDATE berkas SET file_link = $1 WHERE user_id = $2`,
+        [fileLink, id]
+      );
+
+      res.status(200).json({ message: "Berhasil diperbarui" });
+    } else {
+      await client.query(
+        `INSERT INTO berkas(user_id, file_name, file_link) VALUES($1, $2, $3) RETURNING *`,
+        [id, file_name, fileLink]
+      );
+
+      res.status(200).json({ message: "Data berhasil disimpan" });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+// Rubah status
+router.put("/ubah-status", authorize("admin"), async (req, res) => {
+  try {
+    const { status, id } = req.query;
+
+    await client.query(
+      `UPDATE pendaftar SET status_pendaftaran = $1 WHERE userid = $2`,
+      [status, id]
+    );
+
+    res.status(200).json({ message: "Status pendaftaran berhasil diperbarui" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: error.message });

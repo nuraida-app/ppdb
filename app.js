@@ -19,6 +19,7 @@ import RouterInfo from "./router/info.js";
 import RouterJadwal from "./router/jadwal.js";
 import RouterKuis from "./router/kuisioner.js";
 import RouterFormulir from "./router/form.js";
+import RouterWilayah from "./router/wilayah.js";
 import RouterStatistik from "./router/statistik.js";
 
 app.use(
@@ -40,6 +41,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use("/assets", express.static(path.join(__dirname, "assets")));
 app.use("/users", RouterUsers);
 app.use("/otorisasi", RouterAuth);
 app.use("/pembayaran", RouterPembayaran);
@@ -50,6 +52,7 @@ app.use("/info", RouterInfo);
 app.use("/jadwal", RouterJadwal);
 app.use("/kuis", RouterKuis);
 app.use("/formulir", RouterFormulir);
+app.use("/wilayah", RouterWilayah);
 app.use("/statistik", RouterStatistik);
 
 export default app;

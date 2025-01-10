@@ -50,7 +50,7 @@ router.get("/get", authorize("admin"), async (req, res) => {
 
       // Ambil data berdasarkan halaman dan batas
       const dataResult = await client.query(
-        "SELECT * FROM user_info ORDER BY id LIMIT $1 OFFSET $2",
+        "SELECT * FROM user_info ORDER BY id DESC LIMIT $1 OFFSET $2",
         [limit, offset]
       );
 
