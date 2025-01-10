@@ -31,22 +31,22 @@ const SignIn = () => {
   // Function to handle form submission
   const submitHandler = (e) => {
     e.preventDefault();
-    login(formData)
-      .unwrap()
-      .then(() => {
-        load()
-          .unwrap()
-          .then((user) => {
-            dispatch(setLogin(user));
-          });
-      })
-      .catch((err) => {
-        toast.error(err.data?.message || "Login failed");
-      });
+    login(formData);
   };
 
   useEffect(() => {
-    if (signIn && user) {
+    if (isSuccess) {
+      console.log(isSuccess);
+    }
+
+    if (error) {
+      toast.error(error.data.message);
+    }
+  }, [isSuccess, error, user, signIn]);
+
+  useEffect(() => {
+    if (user) {
+      console.log(user);
       if (user.peran === "user") {
         navigate("/user-beranda");
       } else if (user.peran === "admin") {
@@ -55,7 +55,7 @@ const SignIn = () => {
         toast.error("Peran tidak valid");
       }
     }
-  }, [signIn, user, navigate]);
+  }, [user, signIn]);
 
   return (
     <div
@@ -97,9 +97,9 @@ const SignIn = () => {
         <button
           className="btn btn-primary w-100 py-2"
           type="submit"
-          disabled={isLoading && !user?.peran}
+          disabled={isLoading}
         >
-          {isLoading && !user?.peran ? (
+          {isLoading ? (
             <div className="spinner-border text-warning" role="status">
               <span className="visually-hidden">Loading...</span>
             </div>
